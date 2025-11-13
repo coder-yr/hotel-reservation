@@ -1,0 +1,216 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* --- Refined Light mode tokens --- */
+    /* Hex fallbacks (easier for component styling) */
+    --primary-hex: #0078FF;
+    --accent-hex: #FF6B00;
+    --muted-hex: #8C8C8C;
+
+    /* HSL tokens for Tailwind mapping */
+    --primary: 212 100% 50%; /* #0078FF */
+    --accent: 25 100% 50%; /* #FF6B00 */
+
+    /* Backgrounds & surfaces */
+    --background: 0 0% 100%; /* #FFFFFF */
+    --section-background: 210 68% 97%; /* #F5F7FA */
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 0 0% 10%; /* #1A1A1A */
+    --card-border: 210 14% 92%; /* subtle light border */
+    --overlay: rgba(0,0,0,0.4);
+
+    /* Typography */
+    --foreground: 0 0% 10%; /* #1A1A1A */
+    --secondary: 0 0% 29%; /* #4A4A4A */
+    --muted: 0 0% 55%; /* #8C8C8C */
+
+    /* UI element tokens */
+    --input-background: 210 100% 98%; /* #F8FAFC */
+    --input-border: 210 74% 90%; /* #D9E1EC approx */
+    --disabled-button: 0 0% 88%; /* #E1E1E1 */
+
+    /* Status */
+    --success: 134 58% 41%; /* #28A745 */
+    --warning: 46 100% 51%; /* #FFC107 */
+    --error: 354 70% 53%; /* #DC3545 */
+    --info: 190 78% 40%; /* #17A2B8 */
+
+    /* Shadows & radius */
+    --card-shadow: 0 8px 24px rgba(9,30,66,0.06);
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(90deg, #0078FF 0%, #00B4FF 100%);
+    --gradient-orange: linear-gradient(90deg, #FF6B00 0%, #FFA733 100%);
+  }
+
+  .dark {
+    /* --- Refined Dark mode tokens --- */
+    --primary-hex: #339CFF;
+    --accent-hex: #FF8C42;
+
+    --primary: 202 100% 60%; /* #339CFF */
+    --accent: 24 100% 63%; /* #FF8C42 */
+
+    /* Backgrounds & surfaces */
+    --background: 221 24% 7%; /* #0D1320 */
+    --section-background: 220 28% 9%; /* #111827 */
+    --card: 216 16% 18%; /* #1A2233-ish */
+    --card-foreground: 0 0% 100%; /* #FFFFFF */
+    --card-border: 220 18% 14%;
+    --overlay: rgba(0,0,0,0.7);
+
+    /* Typography */
+    --foreground: 0 0% 100%; /* #FFFFFF */
+    --secondary: 218 10% 75%; /* #D1D5DB */
+    --muted: 220 8% 60%; /* #9CA3AF */
+
+    /* UI element tokens */
+    --input-background: 216 10% 15%; /* #1F2937 */
+    --input-border: 210 12% 26%; /* #374151 */
+    --disabled-button: 210 12% 26%; /* #374151 */
+
+    /* Status */
+    --success: 150 55% 60%; /* #3FCF8E */
+    --warning: 42 95% 57%; /* #FBBF24 */
+    --error: 350 80% 72%; /* #F87171 */
+    --info: 198 95% 63%; /* #38BDF8 */
+
+    /* Shadows & glow */
+    --card-shadow: 0 10px 30px rgba(2,6,23,0.6);
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(90deg, #1E3A8A 0%, #3B82F6 100%);
+    --gradient-orange: linear-gradient(90deg, #FF8C42 0%, #FF6B00 100%);
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* smooth theme transition */
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* Back-compat mapping: convert common Tailwind static surface classes
+     to our theme tokens so older components automatically respect
+     light/dark without changing every file. These use !important so
+     they override Tailwind's static utilities at runtime. */
+  .bg-white {
+    background: hsl(var(--card)) !important;
+    color: hsl(var(--card-foreground)) !important;
+  }
+  .bg-slate-50,
+  .bg-gray-50,
+  .bg-gray-100 {
+    background: hsl(var(--section-background)) !important;
+    color: inherit !important;
+  }
+}
+
+/* Component styles to unify look across themes */
+@layer components {
+  .card {
+    background: hsl(var(--card));
+    color: hsl(var(--card-foreground));
+    border: 1px solid hsl(var(--card-border));
+    box-shadow: var(--card-shadow);
+    border-radius: var(--radius);
+    padding: 1rem;
+  }
+
+  /* Hero card: designed to sit on strong hero gradients (like flights) */
+  .card-hero {
+    /* light panel on hero for clarity */
+    background: #ffffff;
+    color: #0b1220;
+    border: 1px solid rgba(2,6,23,0.06);
+    box-shadow: 0 18px 40px rgba(9,30,66,0.18);
+    border-radius: calc(var(--radius) + 0.25rem);
+    padding: 1.25rem;
+  }
+
+  /* Theme-aware hero background utility */
+  .hero-gradient {
+    background: var(--gradient-orange);
+    color: #fff;
+  }
+
+  /* dark-mode variant: slightly translucent so it's not blinding */
+  .dark .card-hero {
+    background: rgba(255,255,255,0.04);
+    color: hsl(var(--foreground));
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 18px 40px rgba(2,6,23,0.6);
+  }
+
+  .section-bg {
+    background: hsl(var(--section-background));
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center font-medium rounded-md px-4 py-2 transition-colors;
+    background: var(--accent-hex);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .btn-primary:hover {
+    filter: brightness(0.95);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center font-medium rounded-md px-3 py-2 border transition-colors;
+    background: transparent;
+    color: var(--primary-hex);
+    border-color: color-mix(in srgb, var(--primary-hex) 16%, transparent);
+  }
+  .btn-secondary:hover {
+    background: color-mix(in srgb, var(--primary-hex) 8%, transparent);
+  }
+
+  /* Footer style responsive to theme */
+  footer,
+  .footer {
+    background: hsl(var(--section-background));
+    color: hsl(var(--muted));
+    border-top: 1px solid hsl(var(--card-border));
+    padding: 2.5rem 1rem;
+  }
+
+  footer .footer-heading,
+  .footer .footer-heading {
+    color: hsl(var(--foreground));
+    font-weight: 600;
+  }
+
+  /* Small helpers for badges/price highlights */
+  .badge-accent {
+    background: linear-gradient(90deg, var(--accent-hex), color-mix(in srgb, var(--accent-hex) 80%, #fff));
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+}
