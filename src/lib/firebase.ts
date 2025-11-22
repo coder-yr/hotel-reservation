@@ -1,30 +1,30 @@
 // --- Sample Bus Data ---
 const sampleSeats = [
-  { id: 'L1', price: 449, status: 'available', deck: 'lower', row: 1, col: 1 },
-  { id: 'L2', price: 0, status: 'sold', deck: 'lower', row: 2, col: 1 },
-  { id: 'L3', price: 0, status: 'sold', deck: 'lower', row: 3, col: 1 },
-  { id: 'L4', price: 0, status: 'sold', deck: 'lower', row: 4, col: 1 },
-  { id: 'L5', price: 820, status: 'available', deck: 'lower', row: 5, col: 1 },
-  { id: 'L6', price: 0, status: 'sold', deck: 'lower', row: 1, col: 2 },
-  { id: 'L7', price: 0, status: 'sold', deck: 'lower', row: 2, col: 2 },
-  { id: 'L8', price: 799, status: 'available', deck: 'lower', row: 3, col: 2 },
-  { id: 'L9', price: 799, status: 'available', deck: 'lower', row: 4, col: 2 },
-  { id: 'L10', price: 799, status: 'available', deck: 'lower', row: 5, col: 2 },
-  { id: 'U1', price: 729, status: 'available', deck: 'upper', row: 1, col: 1 },
-  { id: 'U2', price: 729, status: 'available', deck: 'upper', row: 1, col: 2 },
-  { id: 'U3', price: 0, status: 'sold', deck: 'upper', row: 2, col: 1 },
-  { id: 'U4', price: 0, status: 'sold', deck: 'upper', row: 2, col: 2 },
-  { id: 'U5', price: 0, status: 'sold', deck: 'upper', row: 3, col: 1 },
-  { id: 'U6', price: 0, status: 'sold', deck: 'upper', row: 3, col: 2 },
-  { id: 'U7', price: 689, status: 'available', deck: 'upper', row: 4, col: 1 },
-  { id: 'U8', price: 0, status: 'sold', deck: 'upper', row: 5, col: 1 },
-  { id: 'U9', price: 0, status: 'sold', deck: 'upper', row: 5, col: 2 },
-  { id: 'U10', price: 1029, status: 'available', deck: 'upper', row: 6, col: 1 },
-  { id: 'U11', price: 729, status: 'available', deck: 'upper', row: 7, col: 1 },
-  { id: 'U12', price: 729, status: 'available', deck: 'upper', row: 7, col: 2 },
-  { id: 'U13', price: 779, status: 'available', deck: 'upper', row: 8, col: 1 },
-  { id: 'U14', price: 0, status: 'sold', deck: 'upper', row: 9, col: 1 },
-  { id: 'U15', price: 0, status: 'sold', deck: 'upper', row: 9, col: 2 },
+    { id: 'L1', price: 449, status: 'available', deck: 'lower', row: 1, col: 1 },
+    { id: 'L2', price: 0, status: 'sold', deck: 'lower', row: 2, col: 1 },
+    { id: 'L3', price: 0, status: 'sold', deck: 'lower', row: 3, col: 1 },
+    { id: 'L4', price: 0, status: 'sold', deck: 'lower', row: 4, col: 1 },
+    { id: 'L5', price: 820, status: 'available', deck: 'lower', row: 5, col: 1 },
+    { id: 'L6', price: 0, status: 'sold', deck: 'lower', row: 1, col: 2 },
+    { id: 'L7', price: 0, status: 'sold', deck: 'lower', row: 2, col: 2 },
+    { id: 'L8', price: 799, status: 'available', deck: 'lower', row: 3, col: 2 },
+    { id: 'L9', price: 799, status: 'available', deck: 'lower', row: 4, col: 2 },
+    { id: 'L10', price: 799, status: 'available', deck: 'lower', row: 5, col: 2 },
+    { id: 'U1', price: 729, status: 'available', deck: 'upper', row: 1, col: 1 },
+    { id: 'U2', price: 729, status: 'available', deck: 'upper', row: 1, col: 2 },
+    { id: 'U3', price: 0, status: 'sold', deck: 'upper', row: 2, col: 1 },
+    { id: 'U4', price: 0, status: 'sold', deck: 'upper', row: 2, col: 2 },
+    { id: 'U5', price: 0, status: 'sold', deck: 'upper', row: 3, col: 1 },
+    { id: 'U6', price: 0, status: 'sold', deck: 'upper', row: 3, col: 2 },
+    { id: 'U7', price: 689, status: 'available', deck: 'upper', row: 4, col: 1 },
+    { id: 'U8', price: 0, status: 'sold', deck: 'upper', row: 5, col: 1 },
+    { id: 'U9', price: 0, status: 'sold', deck: 'upper', row: 5, col: 2 },
+    { id: 'U10', price: 1029, status: 'available', deck: 'upper', row: 6, col: 1 },
+    { id: 'U11', price: 729, status: 'available', deck: 'upper', row: 7, col: 1 },
+    { id: 'U12', price: 729, status: 'available', deck: 'upper', row: 7, col: 2 },
+    { id: 'U13', price: 779, status: 'available', deck: 'upper', row: 8, col: 1 },
+    { id: 'U14', price: 0, status: 'sold', deck: 'upper', row: 9, col: 1 },
+    { id: 'U15', price: 0, status: 'sold', deck: 'upper', row: 9, col: 2 },
 ];
 
 const sampleBusesData = [
@@ -57,6 +57,49 @@ const sampleBusesData = [
     },
 ];
 
+const sampleFlightsData = [
+    {
+        airline: 'IndiGo',
+        depart: '06:00 DEL',
+        arrive: '08:00 BOM',
+        duration: '2h 00m',
+        price: '₹ 4,500',
+        stops: 'Non-stop',
+    },
+    {
+        airline: 'Air India',
+        depart: '10:00 DEL',
+        arrive: '12:15 BOM',
+        duration: '2h 15m',
+        price: '₹ 5,200',
+        stops: 'Non-stop',
+    },
+    {
+        airline: 'Vistara',
+        depart: '14:00 DEL',
+        arrive: '16:10 BOM',
+        duration: '2h 10m',
+        price: '₹ 6,000',
+        stops: 'Non-stop',
+    },
+    {
+        airline: 'SpiceJet',
+        depart: '18:00 DEL',
+        arrive: '20:05 BOM',
+        duration: '2h 05m',
+        price: '₹ 4,200',
+        stops: 'Non-stop',
+    },
+    {
+        airline: 'IndiGo',
+        depart: '07:00 BOM',
+        arrive: '09:00 DEL',
+        duration: '2h 00m',
+        price: '₹ 4,600',
+        stops: 'Non-stop',
+    },
+];
+
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, getDocs, addDoc, serverTimestamp, writeBatch, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
@@ -64,13 +107,13 @@ import type { NewHotel, NewUser, NewRoom, NewReview } from './types';
 
 
 export const firebaseConfig = {
-  "projectId": "lodgify-lite-xhtha",
-  "appId": "1:720826776932:web:cc195257ff975f49788e71",
-  "storageBucket": "lodgify-lite-xhtha.firebasestorage.app",
-  "apiKey": "AIzaSyADLyfG_gE4mtrE04Sm2Zpx5Nld1fMRG8Y",
-  "authDomain": "lodgify-lite-xhtha.firebaseapp.com",
-  "measurementId": "",
-  "messagingSenderId": "720826776932"
+    "projectId": "lodgify-lite-xhtha",
+    "appId": "1:720826776932:web:cc195257ff975f49788e71",
+    "storageBucket": "lodgify-lite-xhtha.firebasestorage.app",
+    "apiKey": "AIzaSyADLyfG_gE4mtrE04Sm2Zpx5Nld1fMRG8Y",
+    "authDomain": "lodgify-lite-xhtha.firebaseapp.com",
+    "measurementId": "",
+    "messagingSenderId": "720826776932"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -100,7 +143,7 @@ const sampleHotelsData: Omit<NewHotel, 'ownerId' | 'ownerName' | 'ownerEmail' | 
         cancellationPolicy: "Full refund for cancellations made 48 hours in advance.",
         isPetFriendly: true,
         documents: [],
-    // status: 'approved',
+        // status: 'approved',
         coverImage: 'https://cf.bstatic.com/static/img/theme-index/bg_luxury/869918c9da63b2c5685fce05965700da5b0e6617.jpg',
         category: 'Premium',
         'data-ai-hint': 'luxury hotel interior'
@@ -119,7 +162,7 @@ const sampleHotelsData: Omit<NewHotel, 'ownerId' | 'ownerName' | 'ownerEmail' | 
         cancellationPolicy: "Full refund for cancellations made 7 days in advance.",
         isPetFriendly: false,
         documents: [],
-    // status: 'approved',
+        // status: 'approved',
         coverImage: 'https://cf.bstatic.com/xdata/images/hotel/max1024x768/678234743.jpg?k=acee705a06f3347cd2f3d53609a536b772a99eda3603c4eb5ef136e5e6cd6204&o=',
         category: 'Boutique',
         'data-ai-hint': 'santorini hotel'
@@ -138,7 +181,7 @@ const sampleHotelsData: Omit<NewHotel, 'ownerId' | 'ownerName' | 'ownerEmail' | 
         cancellationPolicy: "Flexible cancellation up to 24 hours before check-in.",
         isPetFriendly: false,
         documents: [],
-    // status: 'approved',
+        // status: 'approved',
         coverImage: 'https://lux-life.digital/wp-content/uploads/2019/09/turkish-hotel.jpg',
         category: 'Boutique',
         'data-ai-hint': 'modern hotel room'
@@ -157,7 +200,7 @@ const sampleHotelsData: Omit<NewHotel, 'ownerId' | 'ownerName' | 'ownerEmail' | 
         cancellationPolicy: "Cancellation policy requires 14 days notice for a full refund.",
         isPetFriendly: true,
         documents: [],
-    // status: 'pending',
+        // status: 'pending',
         coverImage: 'https://images.pexels.com/photos/208333/pexels-photo-208333.jpeg',
         category: 'Boutique',
         'data-ai-hint': 'ski lodge'
@@ -195,8 +238,8 @@ const sampleRoomsData: Omit<NewRoom, 'hotelId' | 'createdAt' | 'status'>[] = [
         capacity: 4,
         images: ['https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg', 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg'],
     },
-     // For Modern City Hub
-     {
+    // For Modern City Hub
+    {
         title: 'Executive Business Room',
         description: 'Modern comforts and a dedicated workspace for the discerning traveler.',
         price: 250,
@@ -213,36 +256,36 @@ const sampleRoomsData: Omit<NewRoom, 'hotelId' | 'createdAt' | 'status'>[] = [
 ];
 
 const sampleReviewsData = [
-  // Reviews for The Grand Palace
-  {
-    rating: 5,
-    comment: "Absolutely stunning hotel with breathtaking views. The service was impeccable from start to finish. A truly luxurious experience.",
-  },
-  {
-    rating: 4,
-    comment: "Great location and beautiful facilities. The pool area is fantastic. The room was spacious and clean, though the restaurant was a bit pricey.",
-  },
-  // Reviews for Santorini Seaside Escape
-  {
-    rating: 5,
-    comment: "The view from our suite was unbelievable. Waking up to the caldera every morning was magical. The staff were friendly and accommodating. Highly recommend!",
-  },
-  {
-    rating: 5,
-    comment: "Perfect honeymoon destination. The privacy of the infinity pool villa is unmatched. It's expensive, but worth every penny for a special occasion.",
-  },
-  // Reviews for Modern City Hub
-  {
-    rating: 4,
-    comment: "Very clean, modern, and conveniently located for business meetings. The gym is well-equipped. It's not a 'resort' but it's perfect for a city trip.",
-  },
+    // Reviews for The Grand Palace
+    {
+        rating: 5,
+        comment: "Absolutely stunning hotel with breathtaking views. The service was impeccable from start to finish. A truly luxurious experience.",
+    },
+    {
+        rating: 4,
+        comment: "Great location and beautiful facilities. The pool area is fantastic. The room was spacious and clean, though the restaurant was a bit pricey.",
+    },
+    // Reviews for Santorini Seaside Escape
+    {
+        rating: 5,
+        comment: "The view from our suite was unbelievable. Waking up to the caldera every morning was magical. The staff were friendly and accommodating. Highly recommend!",
+    },
+    {
+        rating: 5,
+        comment: "Perfect honeymoon destination. The privacy of the infinity pool villa is unmatched. It's expensive, but worth every penny for a special occasion.",
+    },
+    // Reviews for Modern City Hub
+    {
+        rating: 4,
+        comment: "Very clean, modern, and conveniently located for business meetings. The gym is well-equipped. It's not a 'resort' but it's perfect for a city trip.",
+    },
 ];
 
 
 // --- Seeding Functions ---
 const seedCollection = async <T extends Record<string, any>>(
-    collectionName: string, 
-    data: T[], 
+    collectionName: string,
+    data: T[],
     uniqueField: keyof T & string
 ) => {
     const collectionRef = collection(db, collectionName);
@@ -250,7 +293,7 @@ const seedCollection = async <T extends Record<string, any>>(
 
     const existingDocsSnapshot = await getDocs(query(collectionRef));
     const existingData = new Set(existingDocsSnapshot.docs.map(doc => doc.data()[uniqueField]));
-    
+
     const newData = data.filter(item => !item[uniqueField] || !existingData.has(item[uniqueField]));
 
     if (newData.length === 0) {
@@ -302,8 +345,10 @@ const seedSubcollection = async (
 const seedDatabase = async () => {
     try {
         await seedCollection<NewUser>('users', sampleUsersData, 'email');
-    // Seed Buses
-    await seedCollection('buses', sampleBusesData, 'operator');
+        // Seed Buses
+        await seedCollection('buses', sampleBusesData, 'operator');
+        // Seed Flights
+        await seedCollection('flights', sampleFlightsData, 'airline');
 
         const usersSnapshot = await getDocs(collection(db, 'users'));
         const users = usersSnapshot.docs.map(doc => ({ ...doc.data() as NewUser, id: doc.id }));
@@ -323,7 +368,7 @@ const seedDatabase = async () => {
             });
         }
         if (charlieOwner) {
-             sampleHotelsData.slice(3, 4).forEach(hotel => {
+            sampleHotelsData.slice(3, 4).forEach(hotel => {
                 hotelsToSeed.push({
                     ...hotel,
                     ownerId: charlieOwner.id,
@@ -332,36 +377,36 @@ const seedDatabase = async () => {
                 });
             });
         }
-        
+
         if (hotelsToSeed.length > 0) {
             await seedCollection('hotels', hotelsToSeed, 'name');
         }
 
         const allHotelsSnapshot = await getDocs(collection(db, 'hotels'));
         const allHotels = allHotelsSnapshot.docs.map(doc => ({ ...doc.data() as NewHotel, id: doc.id }));
-        
+
         const grandPalace = allHotels.find(h => h.name === 'The Grand Palace');
         const santoriniEscape = allHotels.find(h => h.name === 'Santorini Seaside Escape');
         const modernHub = allHotels.find(h => h.name === 'Modern City Hub');
 
         const roomsToSeed = [];
-        if(grandPalace) {
+        if (grandPalace) {
             roomsToSeed.push({ ...sampleRoomsData[0], hotelId: grandPalace.id, status: 'approved' });
             roomsToSeed.push({ ...sampleRoomsData[1], hotelId: grandPalace.id, status: 'approved' });
         }
-        if(santoriniEscape) {
+        if (santoriniEscape) {
             roomsToSeed.push({ ...sampleRoomsData[2], hotelId: santoriniEscape.id, status: 'approved' });
             roomsToSeed.push({ ...sampleRoomsData[3], hotelId: santoriniEscape.id, status: 'approved' });
         }
-        if(modernHub) {
+        if (modernHub) {
             roomsToSeed.push({ ...sampleRoomsData[4], hotelId: modernHub.id, status: 'approved' });
             roomsToSeed.push({ ...sampleRoomsData[5], hotelId: modernHub.id, status: 'approved' });
         }
-        
-        if(roomsToSeed.length > 0) {
+
+        if (roomsToSeed.length > 0) {
             await seedCollection('rooms', roomsToSeed, 'title');
         }
-        
+
         // Seed Reviews
         if (bobGuest) {
             const guestReviewBase = {
@@ -378,13 +423,13 @@ const seedDatabase = async () => {
                 ]);
             }
             if (santoriniEscape) {
-                 await seedSubcollection('hotels', santoriniEscape.id, 'reviews', [
+                await seedSubcollection('hotels', santoriniEscape.id, 'reviews', [
                     { ...guestReviewBase, hotelId: santoriniEscape.id, ...sampleReviewsData[2] },
                     { ...guestReviewBase, hotelId: santoriniEscape.id, ...sampleReviewsData[3] }
                 ]);
             }
-             if (modernHub) {
-                 await seedSubcollection('hotels', modernHub.id, 'reviews', [
+            if (modernHub) {
+                await seedSubcollection('hotels', modernHub.id, 'reviews', [
                     { ...guestReviewBase, hotelId: modernHub.id, ...sampleReviewsData[4] }
                 ]);
             }

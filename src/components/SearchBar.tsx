@@ -16,106 +16,72 @@ export const SearchBar = () => {
     setToCity(temp);
   };
 
-  const setToday = () => {
-    setDate(new Date());
-  };
-
-  const setTomorrow = () => {
-    setDate(addDays(new Date(), 1));
-  };
-
   return (
-    <div className="bg-card shadow-lg rounded-2xl p-4 mb-8">
-      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
-        {/* From Section */}
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <Bus className="h-6 w-6 text-muted-foreground flex-shrink-0" />
-          <div className="flex-1 min-w-0">
-            <label className="text-xs text-muted-foreground">From</label>
-            <input
-              value={fromCity}
-              onChange={(e) => setFromCity(e.target.value)}
-              className="w-full text-lg font-semibold bg-transparent border-none outline-none p-0"
-              placeholder="Boarding point"
-            />
-          </div>
+    <div className="flex flex-col md:flex-row items-center w-full max-w-5xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+      {/* From Section */}
+      <div className="flex-1 flex items-center border-r border-gray-200 relative group h-20 px-6 hover:bg-gray-50 transition-colors">
+        <Bus className="h-5 w-5 text-gray-400 mr-3" />
+        <div className="flex-1">
+          <label className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1 block">From</label>
+          <input
+            value={fromCity}
+            onChange={(e) => setFromCity(e.target.value)}
+            className="w-full text-lg font-bold text-gray-800 bg-transparent border-none outline-none placeholder:text-gray-300"
+            placeholder="Source"
+          />
         </div>
-
-        {/* Swap Button */}
-        <Button
-          variant="ghost"
-          size="icon"
+        {/* Swap Button Absolute */}
+        <button
           onClick={swapCities}
-          className="rounded-full bg-muted hover:bg-muted/80 h-10 w-10 flex-shrink-0"
+          className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 bg-white border border-gray-200 rounded-full p-1.5 shadow-sm hover:shadow-md transition-all"
         >
-          <ArrowLeftRight className="h-5 w-5" />
-        </Button>
-
-        {/* To Section */}
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <Bus className="h-6 w-6 text-muted-foreground flex-shrink-0" />
-          <div className="flex-1 min-w-0">
-            <label className="text-xs text-muted-foreground">To</label>
-            <input
-              value={toCity}
-              onChange={(e) => setToCity(e.target.value)}
-              className="w-full text-lg font-semibold bg-transparent border-none outline-none p-0"
-              placeholder="Destination"
-            />
-          </div>
-        </div>
-
-        {/* Date Section */}
-        <div className="flex items-center gap-3">
-          <Popover>
-            <PopoverTrigger asChild>
-              <button className="flex items-center gap-3 text-left">
-                <CalendarIcon className="h-6 w-6 text-muted-foreground flex-shrink-0" />
-                <div>
-                  <label className="text-xs text-muted-foreground block">Date of journey</label>
-                  <div className="text-lg font-semibold">
-                    {format(date, "dd MMM, yyyy")}
-                  </div>
-                </div>
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 bg-card" align="start">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={(newDate) => newDate && setDate(newDate)}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-
-          {/* Today/Tomorrow Buttons */}
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              onClick={setToday}
-              className="rounded-full bg-accent/10 hover:bg-accent/20 text-accent-foreground px-4"
-            >
-              Today
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={setTomorrow}
-              className="rounded-full bg-accent/10 hover:bg-accent/20 text-accent-foreground px-4"
-            >
-              Tomorrow
-            </Button>
-          </div>
-        </div>
-
-        {/* Search Button */}
-        <Button
-          size="icon"
-          className="rounded-full h-12 w-12 bg-destructive hover:bg-destructive/90 text-destructive-foreground flex-shrink-0"
-        >
-          <Search className="h-6 w-6" />
-        </Button>
+          <ArrowLeftRight className="h-4 w-4 text-gray-500" />
+        </button>
       </div>
+
+      {/* To Section */}
+      <div className="flex-1 flex items-center border-r border-gray-200 h-20 px-8 hover:bg-gray-50 transition-colors">
+        <Bus className="h-5 w-5 text-gray-400 mr-3" />
+        <div className="flex-1">
+          <label className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1 block">To</label>
+          <input
+            value={toCity}
+            onChange={(e) => setToCity(e.target.value)}
+            className="w-full text-lg font-bold text-gray-800 bg-transparent border-none outline-none placeholder:text-gray-300"
+            placeholder="Destination"
+          />
+        </div>
+      </div>
+
+      {/* Date Section */}
+      <div className="flex-[0.8] flex items-center h-20 px-6 hover:bg-gray-50 transition-colors cursor-pointer">
+        <Popover>
+          <PopoverTrigger asChild>
+            <div className="flex items-center w-full">
+              <CalendarIcon className="h-5 w-5 text-gray-400 mr-3" />
+              <div className="flex-1">
+                <label className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1 block">Date</label>
+                <div className="text-lg font-bold text-gray-800">
+                  {format(date, "dd MMM yyyy")}
+                </div>
+              </div>
+            </div>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 bg-white" align="start">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={(newDate) => newDate && setDate(newDate)}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+
+      {/* Search Button */}
+      <button className="bg-[#d84e55] hover:bg-[#c23e44] text-white font-bold text-lg px-10 h-20 transition-colors uppercase tracking-wide">
+        Search
+      </button>
     </div>
   );
 }

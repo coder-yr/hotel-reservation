@@ -29,7 +29,7 @@ export function ImageGrid({ images }: ImageGridProps) {
     return (
         <>
             <div className="relative h-[60vh] w-full overflow-hidden rounded-2xl group">
-                <div 
+                <div
                     className="grid grid-cols-4 grid-rows-2 gap-2 h-full cursor-pointer"
                     onClick={openGallery}
                 >
@@ -60,18 +60,18 @@ export function ImageGrid({ images }: ImageGridProps) {
                     ))}
                 </div>
                 <Button variant="secondary" className="absolute bottom-4 right-4" onClick={openGallery}>
-                    <Grid3x3 className="mr-2 h-4 w-4"/>
+                    <Grid3x3 className="mr-2 h-4 w-4" />
                     Show all photos
                 </Button>
             </div>
-            
+
             <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
-                <DialogContent className="max-w-7xl h-[90vh] p-0 border-0 flex items-center justify-center">
+                <DialogContent className="max-w-7xl w-full h-[90vh] p-0 border-0 bg-transparent shadow-none flex items-center justify-center">
                     <DialogHeader className="sr-only">
                         <DialogTitle>Image Gallery</DialogTitle>
                         <DialogDescription>A carousel of all images for this hotel.</DialogDescription>
                     </DialogHeader>
-                   <Carousel className="w-full h-full">
+                    <Carousel className="w-full h-full">
                         <CarouselContent className="h-full">
                             {images.map((src, index) => (
                                 <CarouselItem key={index} className="h-full flex items-center justify-center p-4">
@@ -86,12 +86,12 @@ export function ImageGrid({ images }: ImageGridProps) {
                                 </CarouselItem>
                             ))}
                         </CarouselContent>
-                         {images.length > 1 && (
+                        {images.length > 1 && (
                             <>
                                 <CarouselPrevious className="absolute left-4 bg-background/50 hover:bg-background" />
                                 <CarouselNext className="absolute right-4 bg-background/50 hover:bg-background" />
                             </>
-                         )}
+                        )}
                     </Carousel>
                 </DialogContent>
             </Dialog>

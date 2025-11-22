@@ -4,99 +4,123 @@
 
 @layer base {
   :root {
-    /* --- Refined Light mode tokens --- */
-    /* Hex fallbacks (easier for component styling) */
-    --primary-hex: #0078FF;
-    --accent-hex: #FF6B00;
-    --muted-hex: #8C8C8C;
+    /* --- Oceanic Teal & Coral Theme (Light) --- */
+    /* Hex fallbacks */
+    --primary-hex: #0F766E;
+    /* Deep Teal */
+    --accent-hex: #F43F5E;
+    /* Sunset Coral */
+    --muted-hex: #64748B;
 
-    /* HSL tokens for Tailwind mapping */
-    --primary: 212 100% 50%; /* #0078FF */
-    --accent: 25 100% 50%; /* #FF6B00 */
+    /* HSL tokens */
+    --primary: 175 77% 26%;
+    /* #0F766E */
+    --accent: 343 87% 60%;
+    /* #F43F5E */
 
     /* Backgrounds & surfaces */
-    --background: 0 0% 100%; /* #FFFFFF */
-    --section-background: 210 68% 97%; /* #F5F7FA */
-    --card: 0 0% 100%; /* #FFFFFF */
-    --card-foreground: 0 0% 10%; /* #1A1A1A */
-    --card-border: 210 14% 92%; /* subtle light border */
-    --overlay: rgba(0,0,0,0.4);
+    --background: 0 0% 100%;
+    /* #FFFFFF */
+    --section-background: 210 40% 98%;
+    /* #F8FAFC (Slate-50) */
+    --card: 0 0% 100%;
+    --card-foreground: 215 28% 17%;
+    /* #1E293B (Slate-800) */
+    --card-border: 214 32% 91%;
+    /* #E2E8F0 */
+    --overlay: rgba(15, 118, 110, 0.1);
+    /* Teal tint */
 
     /* Typography */
-    --foreground: 0 0% 10%; /* #1A1A1A */
-    --secondary: 0 0% 29%; /* #4A4A4A */
-    --muted: 0 0% 55%; /* #8C8C8C */
+    --foreground: 215 28% 17%;
+    /* #1E293B */
+    --secondary: 215 16% 47%;
+    /* #64748B */
+    --muted: 215 16% 47%;
 
     /* UI element tokens */
-    --input-background: 210 100% 98%; /* #F8FAFC */
-    --input-border: 210 74% 90%; /* #D9E1EC approx */
-    --disabled-button: 0 0% 88%; /* #E1E1E1 */
+    --input-background: 210 40% 98%;
+    --input-border: 214 32% 91%;
+    --disabled-button: 214 32% 91%;
 
     /* Status */
-    --success: 134 58% 41%; /* #28A745 */
-    --warning: 46 100% 51%; /* #FFC107 */
-    --error: 354 70% 53%; /* #DC3545 */
-    --info: 190 78% 40%; /* #17A2B8 */
+    --success: 142 71% 45%;
+    /* #22C55E */
+    --warning: 45 93% 47%;
+    /* #F59E0B */
+    --error: 343 87% 60%;
+    /* #F43F5E (Same as accent for consistency) */
+    --info: 199 89% 48%;
+    /* #0EA5E9 */
 
     /* Shadows & radius */
-    --card-shadow: 0 8px 24px rgba(9,30,66,0.06);
-    --radius: 0.75rem;
+    --card-shadow: 0 8px 32px 0 rgba(15, 118, 110, 0.15);
+    /* Glass shadow */
+    --radius: 1.5rem;
+    /* Highly rounded */
 
     /* Gradients */
-    --gradient-primary: linear-gradient(90deg, #0078FF 0%, #00B4FF 100%);
-    --gradient-orange: linear-gradient(90deg, #FF6B00 0%, #FFA733 100%);
+    --gradient-primary: linear-gradient(135deg, #0F766E 0%, #14B8A6 100%);
+    --gradient-orange: linear-gradient(135deg, #F43F5E 0%, #FB7185 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
   }
 
   .dark {
-    /* --- Refined Dark mode tokens --- */
-    --primary-hex: #339CFF;
-    --accent-hex: #FF8C42;
+    /* --- Oceanic Teal & Coral Theme (Dark) --- */
+    --primary-hex: #2DD4BF;
+    --accent-hex: #FB7185;
 
-    --primary: 202 100% 60%; /* #339CFF */
-    --accent: 24 100% 63%; /* #FF8C42 */
+    --primary: 168 64% 50%;
+    --accent: 344 93% 71%;
 
     /* Backgrounds & surfaces */
-    --background: 221 24% 7%; /* #0D1320 */
-    --section-background: 220 28% 9%; /* #111827 */
-    --card: 216 16% 18%; /* #1A2233-ish */
-    --card-foreground: 0 0% 100%; /* #FFFFFF */
-    --card-border: 220 18% 14%;
-    --overlay: rgba(0,0,0,0.7);
+    --background: 215 28% 13%;
+    --section-background: 215 28% 10%;
+    --card: 215 28% 17%;
+    --card-foreground: 210 40% 98%;
+    --card-border: 215 28% 25%;
+    --overlay: rgba(0, 0, 0, 0.7);
 
     /* Typography */
-    --foreground: 0 0% 100%; /* #FFFFFF */
-    --secondary: 218 10% 75%; /* #D1D5DB */
-    --muted: 220 8% 60%; /* #9CA3AF */
+    --foreground: 210 40% 98%;
+    --secondary: 215 20% 65%;
+    --muted: 215 20% 65%;
 
     /* UI element tokens */
-    --input-background: 216 10% 15%; /* #1F2937 */
-    --input-border: 210 12% 26%; /* #374151 */
-    --disabled-button: 210 12% 26%; /* #374151 */
+    --input-background: 215 28% 13%;
+    --input-border: 215 28% 25%;
+    --disabled-button: 215 28% 25%;
 
     /* Status */
-    --success: 150 55% 60%; /* #3FCF8E */
-    --warning: 42 95% 57%; /* #FBBF24 */
-    --error: 350 80% 72%; /* #F87171 */
-    --info: 198 95% 63%; /* #38BDF8 */
+    --success: 142 71% 45%;
+    --warning: 45 93% 47%;
+    --error: 343 87% 60%;
+    --info: 199 89% 48%;
 
     /* Shadows & glow */
-    --card-shadow: 0 10px 30px rgba(2,6,23,0.6);
-    --radius: 0.75rem;
+    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    --radius: 1.5rem;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(90deg, #1E3A8A 0%, #3B82F6 100%);
-    --gradient-orange: linear-gradient(90deg, #FF8C42 0%, #FF6B00 100%);
+    --gradient-primary: linear-gradient(135deg, #115E59 0%, #0F766E 100%);
+    --gradient-orange: linear-gradient(135deg, #BE123C 0%, #E11D48 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
     /* smooth theme transition */
     transition: background-color 0.3s ease, color 0.3s ease;
+    background-image:
+      radial-gradient(circle at 15% 50%, rgba(15, 118, 110, 0.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(244, 63, 94, 0.08), transparent 25%);
+    background-attachment: fixed;
   }
 }
 
@@ -113,14 +137,52 @@
     border-width: 0;
   }
 
-  /* Back-compat mapping: convert common Tailwind static surface classes
-     to our theme tokens so older components automatically respect
-     light/dark without changing every file. These use !important so
-     they override Tailwind's static utilities at runtime. */
+  /* Glassmorphism Utilities */
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .dark .glass {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: var(--card-shadow);
+  }
+
+  .dark .glass-card {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-accent {
+    background: var(--gradient-orange);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Back-compat mapping */
   .bg-white {
     background: hsl(var(--card)) !important;
     color: hsl(var(--card-foreground)) !important;
   }
+
   .bg-slate-50,
   .bg-gray-50,
   .bg-gray-100 {
@@ -132,23 +194,16 @@
 /* Component styles to unify look across themes */
 @layer components {
   .card {
-    background: hsl(var(--card));
-    color: hsl(var(--card-foreground));
-    border: 1px solid hsl(var(--card-border));
-    box-shadow: var(--card-shadow);
+    @apply glass-card;
     border-radius: var(--radius);
-    padding: 1rem;
+    padding: 1.5rem;
   }
 
   /* Hero card: designed to sit on strong hero gradients (like flights) */
   .card-hero {
-    /* light panel on hero for clarity */
-    background: #ffffff;
-    color: #0b1220;
-    border: 1px solid rgba(2,6,23,0.06);
-    box-shadow: 0 18px 40px rgba(9,30,66,0.18);
-    border-radius: calc(var(--radius) + 0.25rem);
-    padding: 1.25rem;
+    @apply glass-card;
+    border-radius: calc(var(--radius) + 0.5rem);
+    padding: 1.5rem;
   }
 
   /* Theme-aware hero background utility */
@@ -159,58 +214,65 @@
 
   /* dark-mode variant: slightly translucent so it's not blinding */
   .dark .card-hero {
-    background: rgba(255,255,255,0.04);
+    background: rgba(255, 255, 255, 0.04);
     color: hsl(var(--foreground));
-    border: 1px solid rgba(255,255,255,0.06);
-    box-shadow: 0 18px 40px rgba(2,6,23,0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 18px 40px rgba(2, 6, 23, 0.6);
   }
 
   .section-bg {
-    background: hsl(var(--section-background));
+    background: transparent;
+    /* Let global gradient show through */
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center font-medium rounded-md px-4 py-2 transition-colors;
-    background: var(--accent-hex);
+    @apply inline-flex items-center justify-center font-medium rounded-full px-6 py-3 transition-all;
+    background: var(--gradient-primary);
     color: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 14px rgba(15, 118, 110, 0.4);
   }
+
   .btn-primary:hover {
-    filter: brightness(0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(15, 118, 110, 0.6);
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center font-medium rounded-md px-3 py-2 border transition-colors;
-    background: transparent;
+    @apply inline-flex items-center justify-center font-medium rounded-full px-5 py-3 border transition-all;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
     color: var(--primary-hex);
-    border-color: color-mix(in srgb, var(--primary-hex) 16%, transparent);
+    border-color: var(--primary-hex);
   }
+
   .btn-secondary:hover {
-    background: color-mix(in srgb, var(--primary-hex) 8%, transparent);
+    background: rgba(15, 118, 110, 0.1);
   }
 
   /* Footer style responsive to theme */
   footer,
   .footer {
-    background: hsl(var(--section-background));
-    color: hsl(var(--muted));
+    @apply glass;
     border-top: 1px solid hsl(var(--card-border));
-    padding: 2.5rem 1rem;
+    padding: 3rem 1.5rem;
+    margin-top: 4rem;
   }
 
   footer .footer-heading,
   .footer .footer-heading {
     color: hsl(var(--foreground));
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
   /* Small helpers for badges/price highlights */
   .badge-accent {
-    background: linear-gradient(90deg, var(--accent-hex), color-mix(in srgb, var(--accent-hex) 80%, #fff));
+    background: var(--gradient-orange);
     color: #fff;
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-size: 0.75rem;
     font-weight: 600;
+    box-shadow: 0 2px 10px rgba(244, 63, 94, 0.3);
   }
 }

@@ -26,7 +26,7 @@ export default async function DashboardPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
-      <main className="flex-1 container mx-auto px-4 py-10">
+      <main className="flex-1 container mx-auto px-4 pt-32 pb-10">
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Welcome back</h1>
           <p className="text-muted-foreground">Find hotels, buses and flights — view your upcoming trips and manage bookings.</p>

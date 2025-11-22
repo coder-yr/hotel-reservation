@@ -1,24 +1,24 @@
 export const getFilteredFlights = async (from: string, to: string, date?: string): Promise<Flight[]> => {
-        const snapshot = await getDocs(query(flightsCol));
-        return snapshot.docs
-            .map(doc => ({ id: doc.id, ...doc.data() }))
-            .filter(flight => {
-                const f = flight as Flight;
-                return f.depart.toLowerCase().includes(from.toLowerCase()) &&
-                    f.arrive.toLowerCase().includes(to.toLowerCase());
-                // Optionally filter by date if you store it in flight records
-            }) as Flight[];
+    const snapshot = await getDocs(query(flightsCol));
+    return snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(flight => {
+            const f = flight as Flight;
+            return f.depart.toLowerCase().includes(from.toLowerCase()) &&
+                f.arrive.toLowerCase().includes(to.toLowerCase());
+            // Optionally filter by date if you store it in flight records
+        }) as Flight[];
 };
 export const getFilteredBuses = async (from: string, to: string, date: string): Promise<Bus[]> => {
-        const snapshot = await getDocs(query(busesCol));
-        return snapshot.docs
-            .map(doc => ({ id: doc.id, ...doc.data() }))
-                    .filter(bus => {
-                        const b = bus as Bus;
-                        return b.depart.toLowerCase().includes(from.toLowerCase()) &&
-                            b.arrive.toLowerCase().includes(to.toLowerCase());
-                        // Optionally filter by date if you store it in bus records
-                    }) as Bus[];
+    const snapshot = await getDocs(query(busesCol));
+    return snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(bus => {
+            const b = bus as Bus;
+            return b.depart.toLowerCase().includes(from.toLowerCase()) &&
+                b.arrive.toLowerCase().includes(to.toLowerCase());
+            // Optionally filter by date if you store it in bus records
+        }) as Bus[];
 };
 // Bus Functions
 const busesCol = collection(db, "buses");
@@ -92,24 +92,24 @@ export const fromFirestore = <T extends { id: string }>(docSnap: any): T | undef
 // No longer needed: authenticateUser. Use Firebase Auth for authentication.
 
 export const createUser = async (userData: NewUser, uid?: string): Promise<User> => {
-        // If UID is provided, use it as Firestore document ID
-        if (uid) {
-            const userRef = doc(usersCol, uid);
-            await setDoc(userRef, { ...userData, createdAt: serverTimestamp() });
-            return {
-                id: uid,
-                ...userData,
-                createdAt: new Date(),
-            };
-        } else {
-            // Fallback for legacy code
-            const newUserDoc = await addDoc(usersCol, { ...userData, createdAt: serverTimestamp() });
-            return {
-                id: newUserDoc.id,
-                ...userData,
-                createdAt: new Date(),
-            };
-        }
+    // If UID is provided, use it as Firestore document ID
+    if (uid) {
+        const userRef = doc(usersCol, uid);
+        await setDoc(userRef, { ...userData, createdAt: serverTimestamp() });
+        return {
+            id: uid,
+            ...userData,
+            createdAt: new Date(),
+        };
+    } else {
+        // Fallback for legacy code
+        const newUserDoc = await addDoc(usersCol, { ...userData, createdAt: serverTimestamp() });
+        return {
+            id: newUserDoc.id,
+            ...userData,
+            createdAt: new Date(),
+        };
+    }
 };
 
 export const getUserById = async (id: string): Promise<User | undefined> => {
@@ -141,7 +141,7 @@ export const searchHotels = async (criteria: HotelSearchCriteria): Promise<Hotel
     if (criteria.destination) {
         const searchLower = criteria.destination.toLowerCase();
         hotels = hotels.filter(hotel =>
-            (hotel.name.toLowerCase().includes(searchLower) ||
+        (hotel.name.toLowerCase().includes(searchLower) ||
             hotel.location.toLowerCase().includes(searchLower))
         );
     }
@@ -153,11 +153,11 @@ export const searchHotels = async (criteria: HotelSearchCriteria): Promise<Hotel
     }
 
     if (criteria.minPrice !== undefined && criteria.maxPrice !== undefined) {
-         // This is a simplified price filter. In a real app, you would query rooms
-         // associated with the hotel and check if any fall within the price range.
-         // For this demo, we'll just return all hotels and assume the client might do more filtering,
-         // or we'll add a 'basePrice' to the hotel object in a future iteration.
-         // This implementation assumes hotels have rooms that might fit the criteria.
+        // This is a simplified price filter. In a real app, you would query rooms
+        // associated with the hotel and check if any fall within the price range.
+        // For this demo, we'll just return all hotels and assume the client might do more filtering,
+        // or we'll add a 'basePrice' to the hotel object in a future iteration.
+        // This implementation assumes hotels have rooms that might fit the criteria.
     }
 
     return hotels;
@@ -193,7 +193,7 @@ export const createHotel = async (hotelData: NewHotel): Promise<Hotel> => {
         createdAt: serverTimestamp(),
     };
     const newDocRef = await addDoc(hotelsCol, hotelWithTimestamp);
-    
+
     return {
         id: newDocRef.id,
         ...hotelData,
@@ -217,12 +217,12 @@ export const getHotelsByOwner = async (ownerId: string): Promise<Hotel[]> => {
 
 export const getRoomsByOwner = async (ownerId: string): Promise<Room[]> => {
     const ownerHotels = await getHotelsByOwner(ownerId);
-    if(ownerHotels.length === 0) return [];
-    
+    if (ownerHotels.length === 0) return [];
+
     const hotelIds = ownerHotels.map(h => h.id);
     const q = query(roomsCol, where('hotelId', 'in', hotelIds));
     const snapshot = await getDocs(q);
-    
+
     const rooms = snapshot.docs.map(doc => fromFirestore<Room>(doc)).filter(Boolean) as Room[];
 
     return rooms.map(room => {
@@ -242,7 +242,7 @@ export const createRoom = async (roomData: NewRoom): Promise<Room> => {
         createdAt: serverTimestamp(),
     };
     const newDocRef = await addDoc(roomsCol, newRoomData);
-    
+
     return {
         id: newDocRef.id,
         ...roomData,
@@ -274,18 +274,18 @@ export const createBooking = async (bookingData: NewBooking): Promise<Booking> =
         const existingBookingsSnapshot = await getDocs(q);
         const existingBookings = existingBookingsSnapshot.docs.map(doc => fromFirestore<Booking>(doc));
 
-    // Normalize potential Timestamp values to JS Date objects
-    const fromDateObj: Date = (from && (from as any).toDate) ? (from as any).toDate() : (from as Date);
-    const toDateObj: Date = (to && (to as any).toDate) ? (to as any).toDate() : (to as Date);
+        // Normalize potential Timestamp values to JS Date objects
+        const fromDateObj: Date = (from && (from as any).toDate) ? (from as any).toDate() : (from as Date);
+        const toDateObj: Date = (to && (to as any).toDate) ? (to as any).toDate() : (to as Date);
 
-    const newBookingStart = startOfDay(fromDateObj);
-    const newBookingEnd = startOfDay(toDateObj);
+        const newBookingStart = startOfDay(fromDateObj);
+        const newBookingEnd = startOfDay(toDateObj);
 
         const isOverlapping = existingBookings.some(booking => {
             if (!booking) return false;
             const existingStart = startOfDay(booking.fromDate as Date);
             const existingEnd = startOfDay(booking.toDate as Date);
-            
+
             return (newBookingStart < existingEnd) && (newBookingEnd > existingStart);
         });
 
@@ -301,11 +301,11 @@ export const createBooking = async (bookingData: NewBooking): Promise<Booking> =
         const user = await getUserById(bookingData.userId);
         if (!user) throw new Error("User not found.");
 
-    const numberOfNights = differenceInDays(toDateObj, fromDateObj);
+        const numberOfNights = differenceInDays(toDateObj, fromDateObj);
         if (numberOfNights <= 0) {
             throw new Error("Booking must be for at least one night.");
         }
-        
+
         const newBookingData = {
             ...bookingData,
             fromDate: Timestamp.fromDate(fromDateObj),
@@ -320,10 +320,10 @@ export const createBooking = async (bookingData: NewBooking): Promise<Booking> =
             userName: user.name,
             hotelOwnerId: hotel.ownerId,
         };
-        
+
         const docRef = await addDoc(bookingsCol, newBookingData);
         console.log("New booking created in Firestore:", docRef.id);
-        
+
         const finalBooking: Booking = {
             id: docRef.id,
             userId: bookingData.userId,
@@ -376,11 +376,11 @@ export const cancelBooking = async (bookingId: string): Promise<void> => {
 
     // Ensure fromDate is a JS Date object
     const fromDate = booking.fromDate instanceof Timestamp ? booking.fromDate.toDate() : new Date(booking.fromDate);
-    
+
     if (startOfDay(fromDate) < startOfDay(new Date())) {
         throw new Error("Cannot cancel a booking after the check-in date has passed.");
     }
-    
+
     await updateDoc(bookingRef, {
         status: 'cancelled',
         cancelledAt: serverTimestamp()
@@ -391,14 +391,14 @@ export const cancelBooking = async (bookingId: string): Promise<void> => {
 // Review Functions
 export const createReview = async (reviewData: NewReview): Promise<Review> => {
     const reviewCol = collection(db, `hotels/${reviewData.hotelId}/reviews`);
-    
+
     const reviewWithTimestamp = {
         ...reviewData,
         createdAt: serverTimestamp(),
     };
 
     const newDocRef = await addDoc(reviewCol, reviewWithTimestamp);
-    
+
     return {
         id: newDocRef.id,
         ...reviewData,
@@ -419,3 +419,35 @@ export const deleteReview = async (hotelId: string, reviewId: string): Promise<v
     console.log(`Deleted review ${reviewId} from hotel ${hotelId}.`);
 };
 
+
+export async function createBus(busData: any) {
+    try {
+        // Generate seats
+        const seats = [];
+        const totalSeats = busData.totalSeats || 40;
+        const price = parseInt(busData.price);
+
+        for (let i = 1; i <= totalSeats; i++) {
+            seats.push({
+                id: `L${i}`,
+                deck: 'lower',
+                row: Math.ceil(i / 4),
+                col: (i - 1) % 4,
+                status: 'available',
+                price: price
+            });
+        }
+
+        const docRef = await addDoc(collection(db, 'buses'), {
+            ...busData,
+            seats,
+            rating: 0,
+            reviews: 0,
+            createdAt: serverTimestamp(),
+        });
+        return docRef.id;
+    } catch (error) {
+        console.error("Error creating bus:", error);
+        throw error;
+    }
+}

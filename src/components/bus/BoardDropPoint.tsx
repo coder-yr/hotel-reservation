@@ -1,4 +1,3 @@
-
 "use client";
 import { MapPin, Clock } from 'lucide-react';
 import { useState } from 'react';
@@ -10,11 +9,36 @@ interface BoardDropPointProps {
     boardingPoints?: Array<{ id: string; name: string; time: string; address: string }>;
     droppingPoints?: Array<{ id: string; name: string; time: string; address: string }>;
   };
+  initialBoarding?: string;
+  initialDropping?: string;
+  onBoardingChange?: (val: string) => void;
+  onDroppingChange?: (val: string) => void;
 }
 
-export function BoardDropPoint({ onContinue, selectedSeats, bus }: BoardDropPointProps) {
-  const [selectedBoarding, setSelectedBoarding] = useState<string>('');
-  const [selectedDropping, setSelectedDropping] = useState<string>('');
+export function BoardDropPoint({
+  onContinue,
+  selectedSeats,
+  bus,
+  initialBoarding = '',
+  initialDropping = '',
+  onBoardingChange,
+  onDroppingChange
+}: BoardDropPointProps) {
+  const [internalBoarding, setInternalBoarding] = useState<string>(initialBoarding);
+  const [internalDropping, setInternalDropping] = useState<string>(initialDropping);
+
+  const selectedBoarding = onBoardingChange ? initialBoarding : internalBoarding;
+  const selectedDropping = onDroppingChange ? initialDropping : internalDropping;
+
+  const handleBoardingChange = (val: string) => {
+    if (onBoardingChange) onBoardingChange(val);
+    else setInternalBoarding(val);
+  };
+
+  const handleDroppingChange = (val: string) => {
+    if (onDroppingChange) onDroppingChange(val);
+    else setInternalDropping(val);
+  };
 
   const boardingPoints = (bus?.boardingPoints && bus.boardingPoints.length > 0) ? bus.boardingPoints : [
     {
@@ -75,18 +99,17 @@ export function BoardDropPoint({ onContinue, selectedSeats, bus }: BoardDropPoin
             {boardingPoints.map((point) => (
               <label
                 key={point.id}
-                className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                  selectedBoarding === point.id
-                    ? 'border-[#E53935] bg-red-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
+                className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all ${selectedBoarding === point.id || selectedBoarding === point.name
+                  ? 'border-[#E53935] bg-red-50'
+                  : 'border-gray-200 hover:border-gray-300'
+                  }`}
               >
                 <input
                   type="radio"
                   name="boarding"
                   value={point.id}
-                  checked={selectedBoarding === point.id}
-                  onChange={(e) => setSelectedBoarding(e.target.value)}
+                  checked={selectedBoarding === point.id || selectedBoarding === point.name}
+                  onChange={(e) => handleBoardingChange(point.name)}
                   className="mt-1"
                 />
                 <div className="ml-3 flex-1">
@@ -112,18 +135,17 @@ export function BoardDropPoint({ onContinue, selectedSeats, bus }: BoardDropPoin
             {droppingPoints.map((point) => (
               <label
                 key={point.id}
-                className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                  selectedDropping === point.id
-                    ? 'border-[#E53935] bg-red-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
+                className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all ${selectedDropping === point.id || selectedDropping === point.name
+                  ? 'border-[#E53935] bg-red-50'
+                  : 'border-gray-200 hover:border-gray-300'
+                  }`}
               >
                 <input
                   type="radio"
                   name="dropping"
                   value={point.id}
-                  checked={selectedDropping === point.id}
-                  onChange={(e) => setSelectedDropping(e.target.value)}
+                  checked={selectedDropping === point.id || selectedDropping === point.name}
+                  onChange={(e) => handleDroppingChange(point.name)}
                   className="mt-1"
                 />
                 <div className="ml-3 flex-1">
@@ -147,11 +169,10 @@ export function BoardDropPoint({ onContinue, selectedSeats, bus }: BoardDropPoin
         <button
           onClick={onContinue}
           disabled={!isFormValid}
-          className={`flex-1 px-6 py-3 rounded-lg font-medium text-white transition-colors ${
-            isFormValid
-              ? 'bg-[#E53935] hover:bg-[#D32F2F]'
-              : 'bg-gray-300 cursor-not-allowed'
-          }`}
+          className={`flex-1 px-6 py-3 rounded-lg font-medium text-white transition-colors ${isFormValid
+            ? 'bg-[#E53935] hover:bg-[#D32F2F]'
+            : 'bg-gray-300 cursor-not-allowed'
+            }`}
         >
           Continue to Passenger Info
         </button>

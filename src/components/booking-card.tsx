@@ -15,11 +15,11 @@ import type { DateRange } from "react-day-picker"
 import { Calendar } from './ui/calendar';
 import { format, differenceInDays } from 'date-fns';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { formatINR } from '@/lib/utils';
 import { Separator } from './ui/separator';
@@ -62,7 +62,7 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
             let new_val = operation === 'increment' ? current_val + 1 : Math.max(0, current_val - 1);
 
             // Adults must be at least 1 if other guests are present
-            if(type === 'adults' && new_val < 1 && (prev.children > 0 || prev.infants > 0)) {
+            if (type === 'adults' && new_val < 1 && (prev.children > 0 || prev.infants > 0)) {
                 return prev;
             }
 
@@ -128,7 +128,7 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
 
     if (rooms.length === 0) {
         return (
-             <Card className="shadow-xl rounded-2xl border p-6 sticky top-24">
+            <Card className="shadow-xl rounded-2xl border p-6 sticky top-24">
                 <p className="text-center text-muted-foreground">No rooms are available for booking at this hotel.</p>
             </Card>
         )
@@ -138,12 +138,12 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
         <Card className="shadow-xl rounded-2xl border p-6 sticky top-24">
             <CardHeader className="p-0 mb-4">
                 <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-bold">{formatINR(selectedRoom?.price)}</span>
-                        <span className="text-muted-foreground">night</span>
-                    </div>
+                    <span className="text-2xl font-bold">{formatINR(selectedRoom?.price)}</span>
+                    <span className="text-muted-foreground">night</span>
+                </div>
             </CardHeader>
             <CardContent className="p-0 space-y-4">
-                 <div className="rounded-lg border">
+                <div className="rounded-lg border">
                     <div className="grid grid-cols-2">
                         <Popover>
                             <PopoverTrigger asChild>
@@ -152,7 +152,7 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
                                     <p className="text-sm pl-3 text-muted-foreground">{dateRange?.from ? format(dateRange.from, "MM/dd/yyyy") : "Add date"}</p>
                                 </button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
+                            <PopoverContent className="w-auto p-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl rounded-xl" align="start">
                                 <Calendar
                                     initialFocus
                                     mode="range"
@@ -163,14 +163,14 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
                                 />
                             </PopoverContent>
                         </Popover>
-                         <Popover>
+                        <Popover>
                             <PopoverTrigger asChild>
                                 <button className="pl-3 py-3 text-left border-l">
                                     <p className="text-xs font-bold">CHECKOUT</p>
                                     <p className="text-sm text-muted-foreground">{dateRange?.to ? format(dateRange.to, "MM/dd/yyyy") : "Add date"}</p>
                                 </button>
                             </PopoverTrigger>
-                             <PopoverContent className="w-auto p-0" align="start">
+                            <PopoverContent className="w-auto p-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl rounded-xl" align="start">
                                 <Calendar
                                     initialFocus
                                     mode="range"
@@ -188,9 +188,9 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
                             <SelectTrigger className="w-full border-0 rounded-t-none focus:ring-0">
                                 <SelectValue placeholder="Select a room" />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
                                 {rooms.map(room => (
-                                     <SelectItem key={room.id} value={room.id}>{room.title} (Max: {room.capacity} guests)</SelectItem>
+                                    <SelectItem key={room.id} value={room.id}>{room.title} (Max: {room.capacity} guests)</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
@@ -204,7 +204,7 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
                                     <p className="text-sm text-muted-foreground">{guestText}</p>
                                 </button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-80" align="end">
+                            <PopoverContent className="w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl rounded-xl" align="end">
                                 <div className="grid gap-4">
                                     <div className="space-y-2">
                                         <h4 className="font-medium leading-none">Guests</h4>
@@ -233,7 +233,7 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
                             </PopoverContent>
                         </Popover>
                     </div>
-                 </div>
+                </div>
 
                 <Button onClick={handleBooking} disabled={isPending || !dateRange?.from || !dateRange?.to || !selectedRoom} size="lg" className="w-full h-12 text-base font-bold">
                     {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
@@ -243,7 +243,7 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
                 <p className="text-center text-sm text-muted-foreground">You won't be charged yet</p>
 
                 {totalPrice > 0 && (
-                     <div className="space-y-2 pt-4">
+                    <div className="space-y-2 pt-4">
                         <div className="flex justify-between">
                             <span className="underline">{formatINR(selectedRoom?.price)} x {numberOfNights} nights</span>
                             <span>{formatINR(totalPrice)}</span>
@@ -252,8 +252,8 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
                             <span className="underline">Service fee</span>
                             <span>{formatINR(serviceFee)}</span>
                         </div>
-                         <Separator className="my-2" />
-                         <div className="flex justify-between font-bold text-lg">
+                        <Separator className="my-2" />
+                        <div className="flex justify-between font-bold text-lg">
                             <span>Total</span>
                             <span>{formatINR(finalTotal)}</span>
                         </div>

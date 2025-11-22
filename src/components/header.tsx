@@ -1,4 +1,3 @@
-
 "use client"
 import Link from "next/link"
 import { Building2, User, LogOut, LogIn, UserPlus, Globe, BookMarked, Search } from "lucide-react"
@@ -19,82 +18,69 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-20 items-center gap-10">
-        <Link href="/" className="mr-auto flex items-center space-x-2">
-          <Building2 className="h-8 w-8 text-primary dark:text-primary hover:text-primary-hover dark:hover:text-primary-hover transition-colors" />
-          <span className="font-bold font-headline text-2xl text-primary dark:text-primary hover:text-primary-hover dark:hover:text-primary-hover transition-colors">Lodgify</span>
+    <header className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
+      <div className="glass rounded-full px-6 py-3 flex items-center gap-8 shadow-lg backdrop-blur-xl bg-white/70 dark:bg-slate-900/70 border border-white/20 w-full max-w-5xl transition-all duration-300 hover:bg-white/80 dark:hover:bg-slate-900/80">
+        <Link href="/" className="flex items-center space-x-2 mr-auto">
+          <div className="bg-gradient-to-br from-teal-500 to-teal-600 text-white p-2 rounded-xl shadow-lg shadow-teal-500/20">
+            <Building2 className="h-5 w-5" />
+          </div>
+          <span className="font-bold font-headline text-xl tracking-tight text-slate-800 dark:text-white">Lodgify</span>
         </Link>
-        {/* Dashboard image button - place a dashboard image at /public/dashboard.png (or update the src) */}
 
-        
-    <nav className="hidden md:flex items-center space-x-2 rounded-full border border-border/50 shadow-sm px-4 py-2 text-sm font-medium backdrop-blur-sm dark:bg-muted/30">
-      <Link href="/dashboard" className="px-3 py-1 rounded-full hover:bg-accent/10 text-foreground hover:text-accent transition-colors">homepage</Link>
-      <Link href="/hotels" className="px-3 py-1 rounded-full hover:bg-accent/10 text-foreground hover:text-accent transition-colors">Hotels</Link>
-      <Link href="/flights" className="px-3 py-1 rounded-full hover:bg-accent/10 text-foreground hover:text-accent transition-colors">Flights</Link>
-      <Link href="/bus" className="px-3 py-1 rounded-full hover:bg-accent/10 text-foreground hover:text-accent transition-colors">Bus</Link>
-    </nav>
+        <nav className="hidden md:flex items-center gap-1">
+          {[
+            { href: "/dashboard", label: "Home" },
+            { href: "/hotels", label: "Hotels" },
+            { href: "/flights", label: "Flights" },
+            { href: "/bus", label: "Bus" },
+          ].map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="px-5 py-2.5 rounded-full text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-teal-600 dark:hover:text-teal-400 transition-all duration-200"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
 
-        <div className="flex flex-1 items-center justify-end space-x-2">
-            <Link href="/signup">
-              <Button variant="ghost" className="hidden md:inline-flex">Become a host</Button>
-            </Link>
-            <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-                <Globe className="h-5 w-5"/>
-            </Button>
-            <Link href="/search" className="hidden md:inline-flex">
-              <Button variant="ghost" size="icon" aria-label="Search">
-                <Search className="h-5 w-5" />
-              </Button>
-            </Link>
-            <ThemeToggle />
+        <div className="flex items-center gap-3 ml-auto">
+          <ThemeToggle />
+
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2 rounded-full h-10">
-                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" role="presentation" focusable="false" style={{display: 'block', fill: 'none', height: '16px', width: '16px', stroke: 'currentcolor', strokeWidth: 3, overflow: 'visible'}}><g fill="none"><path d="M2 16h28M2 24h28M2 8h28"></path></g></svg>
-                  <Avatar className="h-8 w-8">
+                <Button variant="ghost" className="rounded-full h-10 w-10 p-0 hover:bg-slate-100 dark:hover:bg-white/10">
+                  <Avatar className="h-9 w-9 border-2 border-white dark:border-slate-700 shadow-sm">
                     <AvatarImage src={`https://i.pravatar.cc/150?u=${user.id}`} alt={user.name} />
                     <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                 {user.role === 'owner' && <DropdownMenuItem onClick={() => router.push('/owner')}>Owner Dashboard</DropdownMenuItem>}
-                 {user.role === 'admin' && <DropdownMenuItem onClick={() => router.push('/admin')}>Admin Dashboard</DropdownMenuItem>}
-                 <DropdownMenuItem onClick={() => router.push('/bookings')}>
-                    <BookMarked className="mr-2 h-4 w-4" />
-                    My Bookings
-                 </DropdownMenuItem>
+              <DropdownMenuContent className="w-56 glass-card mt-2" align="end" forceMount>
+                {user.role === 'owner' && <DropdownMenuItem onClick={() => router.push('/owner')}>Owner Dashboard</DropdownMenuItem>}
+                {user.role === 'admin' && <DropdownMenuItem onClick={() => router.push('/admin')}>Admin Dashboard</DropdownMenuItem>}
+                <DropdownMenuItem onClick={() => router.push('/bookings')}>
+                  <BookMarked className="mr-2 h-4 w-4" />
+                  My Bookings
+                </DropdownMenuItem>
                 <DropdownMenuItem>Profile</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Log out
+                <DropdownMenuItem onClick={handleLogout} className="text-red-500 focus:text-red-500">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2 rounded-full h-10">
-                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" role="presentation" focusable="false" style={{display: 'block', fill: 'none', height: '16px', width: '16px', stroke: 'currentcolor', strokeWidth: 3, overflow: 'visible'}}><g fill="none"><path d="M2 16h28M2 24h28M2 8h28"></path></g></svg>
-                  <Avatar className="h-8 w-8 bg-muted">
-                    <User className="h-5 w-5 text-muted-foreground m-auto"/>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuItem onClick={() => router.push('/login')}>
-                    <LogIn className="mr-2 h-4 w-4" />
-                    Sign In
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push('/signup')}>
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Sign Up
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center gap-2">
+              <Link href="/login">
+                <Button variant="ghost" className="rounded-full hover:bg-slate-100 dark:hover:bg-white/10">Sign In</Button>
+              </Link>
+              <Link href="/signup">
+                <Button className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 shadow-lg shadow-slate-900/20">Sign Up</Button>
+              </Link>
+            </div>
           )}
         </div>
       </div>

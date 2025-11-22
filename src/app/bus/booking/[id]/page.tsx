@@ -2,7 +2,7 @@
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { getDoc, doc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { BusDetails } from '@/components/bus/BusDetails';
@@ -22,6 +22,11 @@ export default function BusBookingPage() {
   const [bookingComplete, setBookingComplete] = useState(false);
   const [bookingId, setBookingId] = useState<string>("");
 
+  const [selectedBoarding, setSelectedBoarding] = useState<string>("");
+  const [selectedDropping, setSelectedDropping] = useState<string>("");
+
+  const searchParams = useSearchParams();
+
   useEffect(() => {
     async function fetchBus() {
       if (!id) return;
@@ -33,6 +38,28 @@ export default function BusBookingPage() {
     }
     fetchBus();
   }, [id]);
+
+  // Handle pre-selected data from URL
+  useEffect(() => {
+    const seatsParam = searchParams.get('seats');
+    const boardingParam = searchParams.get('boardingPoint');
+    const droppingParam = searchParams.get('droppingPoint');
+
+    if (seatsParam) {
+      const seats = seatsParam.split(',');
+      setSelectedSeats(seats);
+
+      if (boardingParam && droppingParam) {
+        setSelectedBoarding(boardingParam);
+        setSelectedDropping(droppingParam);
+        if (seats.length > 0) {
+          setCurrentStep(3); // Auto-advance to Passenger Info
+        }
+      } else if (seats.length > 0) {
+        setCurrentStep(2); // Auto-advance to Boarding Point
+      }
+    }
+  }, [searchParams]);
 
   const steps = [
     { number: 1, title: 'Select seats' },
@@ -59,9 +86,10 @@ export default function BusBookingPage() {
   };
 
   const calculateTotal = () => {
-    return selectedSeats.reduce((total, seat) => {
-      const price = parseInt(seat.split('-')[1]);
-      return total + price;
+    if (!bus || !bus.seats) return 0;
+    return selectedSeats.reduce((total, seatId) => {
+      const seatData = bus.seats.find((s: any) => s.id === seatId);
+      return total + (seatData?.price || 0);
     }, 0);
   };
 
@@ -117,6 +145,10 @@ export default function BusBookingPage() {
                     selectedSeats={selectedSeats}
                     bus={bus}
                     onContinue={() => setCurrentStep(3)}
+                    initialBoarding={selectedBoarding}
+                    initialDropping={selectedDropping}
+                    onBoardingChange={setSelectedBoarding}
+                    onDroppingChange={setSelectedDropping}
                   />
                 )}
 

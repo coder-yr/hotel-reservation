@@ -38,7 +38,7 @@ export default async function HotelsPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
-      <main className="flex-1 py-8">
+      <main className="flex-1 pt-32 pb-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
             <SearchForm />
@@ -61,9 +61,9 @@ export default async function HotelsPage() {
           <section className="mt-12 section-bg p-4 rounded-lg">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold tracking-tight">Available in Greece this weekend</h2>
-               <Button variant="ghost" size="sm">Show all &gt;</Button>
+              <Button variant="ghost" size="sm">Show all &gt;</Button>
             </div>
-             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
               {inGreece.map((hotel) => (
                 <Link href={`/hotel/${hotel.id}`} key={hotel.id}>
                   <HotelCard hotel={hotel} price={hotel.price ?? undefined} variant="compact" />
@@ -71,12 +71,12 @@ export default async function HotelsPage() {
               ))}
             </div>
           </section>
-          
-           <section className="mt-12 section-bg p-4 rounded-lg">
+
+          <section className="mt-12 section-bg p-4 rounded-lg">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold tracking-tight">All Stays</h2>
             </div>
-             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
               {hotelsWithPrices.map((hotel) => (
                 <Link href={`/hotel/${hotel.id}`} key={hotel.id}>
                   <HotelCard hotel={hotel} price={hotel.price ?? undefined} variant="compact" />
