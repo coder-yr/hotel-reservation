@@ -41,6 +41,8 @@ export function SearchForm() {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        console.log("Search form submitted");
+
         const params = new URLSearchParams();
         if (destination) {
             params.set('destination', destination);
@@ -54,7 +56,10 @@ export function SearchForm() {
         if (totalGuests > 0) {
             params.set('guests', totalGuests.toString());
         }
-        router.push(`/search?${params.toString()}`);
+
+        const searchUrl = `/search?${params.toString()}`;
+        console.log("Navigating to:", searchUrl);
+        router.push(searchUrl);
     };
 
     return (

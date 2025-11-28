@@ -61,7 +61,11 @@ const prompt = ai.definePrompt({
   Price Range: {{{priceRange}}}
   Amenities: {{{amenities}}}
   
-  IMPORTANT: You must ONLY suggest hotels from the "REAL available hotels" list provided above. Do not hallucinate or make up hotels. If no hotels match perfectly, suggest the closest matches from the list.`,
+  IMPORTANT: 
+  1. You must ONLY suggest hotels from the "REAL available hotels" list provided above. Do not hallucinate.
+  2. If the location is "Anywhere", suggest the best available hotels from ANY location in the list.
+  3. If no hotels match perfectly, suggest the closest matches from the list.
+  4. Return the result as a comma-separated list of hotel names only.`,
 });
 
 const suggestAlternativeAccommodationsFlow = ai.defineFlow(

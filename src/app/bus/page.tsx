@@ -63,7 +63,7 @@ export default function BusPage() {
               Bus Tickets Booking
             </h1>
             <div className="pt-4">
-              <div className="bg-white/95 backdrop-blur-sm rounded-full p-2 shadow-2xl ring-1 ring-black/5 max-w-4xl mx-auto">
+              <div className="glass rounded-full p-2 shadow-2xl max-w-4xl mx-auto border-0">
                 <SearchBar />
               </div>
             </div>

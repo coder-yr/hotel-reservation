@@ -1,30 +1,63 @@
-Admin - admin@lodgify.lite pass-adminpassword
 # Lodgify Lite
 
-This is a modern hotel reservation application built with Next.js and Firebase. It provides a platform for users to browse and book hotels, for hotel owners to manage their properties, and for administrators to oversee the platform.
+Lodgify Lite is a comprehensive travel and accommodation booking platform built with modern web technologies. It offers a seamless experience for users to book hotels, flights, and buses, while providing robust tools for property owners and administrators to manage the platform.
 
-## Tech Stack
+## 🚀 Tech Stack
 
-*   **Framework**: [Next.js](https://nextjs.org/) (with App Router)
+*   **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
 *   **Language**: [TypeScript](https://www.typescriptlang.org/)
 *   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-*   **UI Components**: [ShadCN UI](https://ui.shadcn.com/)
-*   **AI/Generative Features**: [Genkit](https://firebase.google.com/docs/genkit)
+*   **UI Components**: [ShadCN UI](https://ui.shadcn.com/), [Lucide React](https://lucide.dev/)
+*   **Forms & Validation**: [React Hook Form](https://react-hook-form.com/), [Zod](https://zod.dev/)
+*   **Charts**: [Recharts](https://recharts.org/)
+*   **AI/Generative Features**: [Genkit](https://firebase.google.com/docs/genkit), [Google AI](https://ai.google.dev/)
 *   **Backend & Database**: [Firebase](https://firebase.google.com/) (Firestore)
-*   **Authentication**: Simulated local logic using Firestore.
+*   **Authentication**: Custom role-based authentication using Firebase.
 
-## Key Features
+## ✨ Key Features
 
-*   **Role-Based Authentication**: Secure sign-up and login for three distinct user roles: Guests, Hotel Owners, and Administrators.
-*   **Dynamic Hotel Discovery**: Guests can browse and search for hotels, with filtering options for destinations.
-*   **Multi-Step Hotel Creation**: A guided, four-step form for hotel owners to submit new properties, including basic info, facilities, and optional verification documents.
-*   **Owner Dashboard**: A comprehensive dashboard for property owners to view their submitted hotels, track their status (Pending, Approved, Rejected), and see booking information.
-*   **Hotel Management**: Once a hotel is approved, owners can access a dedicated page to add and manage its rooms.
-*   **Admin Dashboard**: A powerful control panel for administrators to review and approve or reject new hotel and room submissions, with a complete overview of all platform data.
-*   **Seamless Booking**: Guests can book rooms, view their reservation history, and manage their stays.
-*   **AI-Powered Suggestions**: In case of booking failures, an AI agent can suggest alternative accommodations based on user preferences.
+### 🏨 Hotel Booking
+*   **Dynamic Discovery**: Browse and search for hotels with advanced filtering options.
+*   **Detailed Listings**: View comprehensive hotel details, including amenities, room types, and reviews.
+*   **Seamless Booking**: Easy-to-use booking flow for guests.
 
-## Getting Started
+### ✈️ Flight Booking
+*   **Search & Book**: Find domestic and international flights.
+*   **Real-time Availability**: Check seat availability and pricing.
+
+### 🚌 Bus Booking
+*   **Route Search**: Search for bus routes between cities.
+*   **Seat Selection**: Choose your preferred seats.
+
+### 👥 User Roles
+*   **Guest**: Search and book accommodations and travel.
+*   **Hotel Owner**: Submit and manage hotel properties, view bookings, and track status.
+*   **Administrator**: Oversee the entire platform, approve/reject hotel submissions, and manage users.
+
+### 🤖 AI Integration
+*   **Smart Suggestions**: AI-powered recommendations for alternative accommodations if your preferred choice is unavailable.
+
+## 📂 Project Structure
+
+```
+src/
+├── app/              # Next.js App Router pages and layouts
+│   ├── (auth)/       # Authentication routes (login, signup)
+│   ├── admin/        # Admin dashboard
+│   ├── owner/        # Owner dashboard
+│   ├── hotels/       # Hotel search and details
+│   ├── flights/      # Flight booking features
+│   ├── bus/          # Bus booking features
+│   └── ...
+├── components/       # Reusable UI components
+│   ├── ui/           # ShadCN UI primitives
+│   └── ...
+├── ai/               # Genkit and AI logic
+├── hooks/            # Custom React hooks
+└── lib/              # Utility functions and configurations
+```
+
+## 🛠️ Getting Started
 
 ### Prerequisites
 
@@ -39,16 +72,25 @@ This is a modern hotel reservation application built with Next.js and Firebase. 
     ```
 2.  Navigate to the project directory:
     ```bash
-    cd <project-directory>
+    cd hotel
     ```
-3.  Install the dependencies:
+3.  Install dependencies:
     ```bash
     npm install
     ```
 
+### Environment Variables
+
+Create a `.env` file in the root directory and add the necessary environment variables. You will need keys for Firebase and Google GenAI.
+
+```env
+# Example variables (adjust based on your actual setup)
+GOOGLE_GENAI_API_KEY=your_api_key_here
+```
+
 ### Running the Development Server
 
-To start the development server, run:
+Start the development server:
 
 ```bash
 npm run dev
@@ -56,7 +98,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-The application comes pre-seeded with sample users:
-*   **Admin:** `admin@lodgify.lite` / `adminpassword`
-*   **Owner:** `alice@example.com` / `password`
-*   **Guest:** `bob@example.com` / `password`
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1.  Fork the repository.
+2.  Create a new branch (`git checkout -b feature/YourFeature`).
+3.  Commit your changes (`git commit -m 'Add some feature'`).
+4.  Push to the branch (`git push origin feature/YourFeature`).
+5.  Open a Pull Request.

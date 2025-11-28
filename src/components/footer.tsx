@@ -1,18 +1,9 @@
-"use client";
-
-import React from 'react';
-import Link from 'next/link';
-import { Building2 } from 'lucide-react';
-
-const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg {...props} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-  </svg>
-);
+import Link from "next/link"
+import { Building2, Twitter } from "lucide-react"
 
 export function Footer() {
   return (
-  <footer className="footer section-bg" aria-label="Site footer">
+    <footer className="footer section-bg" aria-label="Site footer">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-start md:items-center">
           <div className="md:col-span-1">
@@ -45,7 +36,7 @@ export function Footer() {
             <h3 className="font-headline text-lg font-semibold footer-heading">Connect</h3>
             <div className="flex mt-4 justify-center md:justify-start space-x-4">
               <Link href="#" className="text-muted hover:text-primary transition-colors">
-                <TwitterIcon className="h-6 w-6" />
+                <Twitter className="h-6 w-6" />
               </Link>
             </div>
           </div>

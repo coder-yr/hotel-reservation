@@ -65,23 +65,23 @@ export default function FlightResultsClient() {
         <div className="mt-6">
           <button onClick={() => setSearchOpen(true)} className="bg-blue-600 text-white px-4 py-2 rounded">Update Search</button>
           {searchOpen && (
-            <div className="bg-section-background border rounded p-4 shadow mb-6">
+            <div className="glass-card p-6 mb-6 border-0">
               <div className="flex flex-col md:flex-row gap-3 items-center">
                 <div className="flex items-center gap-2">
                   <label className="text-xs text-muted-foreground mr-2">FROM</label>
-                  <input className="border rounded px-3 py-2" value={from} onChange={e => setFrom(e.target.value)} />
+                  <input className="glass px-4 py-2 rounded-xl border-0" value={from} onChange={e => setFrom(e.target.value)} />
                 </div>
                 <div className="flex items-center gap-2">
                   <label className="text-xs text-muted-foreground mr-2">TO</label>
-                  <input className="border rounded px-3 py-2" value={to} onChange={e => setTo(e.target.value)} />
+                  <input className="glass px-4 py-2 rounded-xl border-0" value={to} onChange={e => setTo(e.target.value)} />
                 </div>
                 <div className="flex items-center gap-2">
                   <label className="text-xs text-muted-foreground mr-2">DEPARTURE DATE</label>
-                  <input type="date" className="border rounded px-3 py-2" value={date} onChange={e => setDate(e.target.value)} />
+                  <input type="date" className="glass px-4 py-2 rounded-xl border-0" value={date} onChange={e => setDate(e.target.value)} />
                 </div>
                 <div className="ml-auto flex items-center gap-2">
-                  <button onClick={() => setSearchOpen(false)} className="px-4 py-2 border rounded">Cancel</button>
-                  <button onClick={() => handleSearch(from, to, date)} className="px-4 py-2 bg-blue-600 text-white rounded">Search</button>
+                  <button onClick={() => setSearchOpen(false)} className="px-4 py-2 border rounded-xl hover:bg-white/10 transition-colors">Cancel</button>
+                  <button onClick={() => handleSearch(from, to, date)} className="px-4 py-2 bg-blue-600 text-white rounded-xl shadow-lg hover:shadow-blue-500/20 transition-all">Search</button>
                 </div>
               </div>
             </div>
@@ -95,7 +95,7 @@ export default function FlightResultsClient() {
           <div>No flights found.</div>
         ) : (
           flights.map(f => (
-            <div key={f.id} className="flex items-center justify-between border rounded bg-card p-4">
+            <div key={f.id} className="glass-card flex items-center justify-between p-6 hover:scale-[1.01] transition-all duration-300 border-0">
               <div>
                 <div className="font-medium">{f.airline}</div>
                 <div className="text-sm text-muted-foreground">{f.depart} • {f.duration} • {f.arrive} • {f.stops}</div>
@@ -118,7 +118,7 @@ export default function FlightResultsClient() {
       <FlightBookingModal
         flight={selectedFlight}
         open={modalOpen}
-        onOpenChangeAction={(v) => { setModalOpen(v); if(!v) setSelectedFlight(null); }}
+        onOpenChangeAction={(v) => { setModalOpen(v); if (!v) setSelectedFlight(null); }}
         onBookedAction={() => console.log('flight booked')}
       />
     </>

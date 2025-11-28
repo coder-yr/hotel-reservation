@@ -174,6 +174,12 @@ export const getRoomsByHotelId = async (hotelId: string): Promise<Room[]> => {
     return snapshot.docs.map(doc => fromFirestore<Room>(doc)).filter(Boolean) as Room[];
 };
 
+export const getAllApprovedRooms = async (): Promise<Room[]> => {
+    const q = query(roomsCol, where('status', '==', 'approved'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => fromFirestore<Room>(doc)).filter(Boolean) as Room[];
+};
+
 export const getRoomById = async (id: string): Promise<Room | undefined> => {
     const roomDoc = await getDoc(doc(roomsCol, id));
     return fromFirestore<Room>(roomDoc);
@@ -201,6 +207,18 @@ export const createHotel = async (hotelData: NewHotel): Promise<Hotel> => {
         coverImage: hotelWithTimestamp.coverImage,
         createdAt: new Date(),
     }
+}
+
+export const deleteHotel = async (id: string): Promise<void> => {
+    // Delete associated rooms first
+    const roomsSnapshot = await getDocs(query(roomsCol, where('hotelId', '==', id)));
+    const deleteRoomPromises = roomsSnapshot.docs.map(doc => deleteDoc(doc.ref));
+    await Promise.all(deleteRoomPromises);
+
+    // Delete the hotel
+    const hotelRef = doc(hotelsCol, id);
+    await deleteDoc(hotelRef);
+    console.log(`Deleted hotel ${id} and ${roomsSnapshot.size} associated rooms from Firestore.`);
 }
 
 export const updateRoomStatus = async (id: string, status: 'approved' | 'rejected'): Promise<void> => {
@@ -450,4 +468,19 @@ export async function createBus(busData: any) {
         console.error("Error creating bus:", error);
         throw error;
     }
+}
+
+export const deleteBus = async (id: string): Promise<void> => {
+    const busRef = doc(busesCol, id);
+    await deleteDoc(busRef);
+    console.log(`Deleted bus ${id} from Firestore.`);
+}
+
+export const updateBus = async (id: string, busData: any): Promise<void> => {
+    const busRef = doc(busesCol, id);
+    // Remove seats from update if not intended to be reset, or handle carefully.
+    // For now, we'll assume basic details update.
+    const { seats, ...updateData } = busData;
+    await updateDoc(busRef, updateData);
+    console.log(`Updated bus ${id} in Firestore.`);
 }

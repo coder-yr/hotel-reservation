@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { getAllBuses, getFilteredBuses } from '@/lib/data'
 import BusBookingModal from './bus-booking-modal'
 import BusSearchPanel from './bus-search-panel'
@@ -21,7 +22,7 @@ type Bus = {
 export default function BusResultsClient() {
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedBus, setSelectedBus] = useState<Bus | null>(null)
-  const [sort, setSort] = useState<'best'|'price'|'duration'>('best')
+  const [sort, setSort] = useState<'best' | 'price' | 'duration'>('best')
   const [searchOpen, setSearchOpen] = useState(false)
   const [from, setFrom] = useState('Mumbai')
   const [to, setTo] = useState('Basti')
@@ -50,9 +51,9 @@ export default function BusResultsClient() {
       <div className="mb-6">
         <h1 className="text-3xl font-bold">Bus Results</h1>
         <p className="text-sm text-muted-foreground mt-1">{from} → {to} • {new Date(date).toLocaleDateString()}</p>
-          <div className="mt-4">
+        <div className="mt-4">
           <div className="bg-card border rounded shadow-sm overflow-hidden">
-            <img src="/images/bus-promo.svg" alt="Go Deals" className="w-full h-36 object-cover" />
+            <Image src="/images/bus-promo.svg" alt="Go Deals" width={1200} height={144} className="w-full h-36 object-cover" />
           </div>
         </div>
         <div className="mt-6">
@@ -69,7 +70,7 @@ export default function BusResultsClient() {
               <div className="bg-card text-blue-700 rounded px-4 py-2">{new Date(date).toLocaleDateString()}</div>
             </div>
             <div>
-        <button onClick={(e) => { e.stopPropagation(); setSearchOpen(true) }} className="bg-card text-blue-700 px-4 py-2 rounded font-medium">UPDATE SEARCH</button>
+              <button onClick={(e) => { e.stopPropagation(); setSearchOpen(true) }} className="bg-card text-blue-700 px-4 py-2 rounded font-medium">UPDATE SEARCH</button>
             </div>
           </div>
           {searchOpen && (
@@ -99,7 +100,7 @@ export default function BusResultsClient() {
         </div>
       </div>
       <div className="grid lg:grid-cols-4 gap-6">
-  <aside className="lg:col-span-1 bg-card border border-pink-200 rounded p-4 sticky top-24">
+        <aside className="lg:col-span-1 bg-card border border-pink-200 rounded p-4 sticky top-24">
           <h3 className="text-lg font-medium mb-3">Filters</h3>
           <div className="space-y-3">
             <div>
@@ -170,7 +171,7 @@ export default function BusResultsClient() {
                   <div className="mt-3 flex items-center justify-between">
                     <div className="text-sm text-muted-foreground">Live Tracking</div>
                     <div className="flex items-center gap-4">
-                            <button
+                      <button
                         onClick={() => { setSelectedBus(b); setModalOpen(true) }}
                         className="btn-primary w-36 px-4 py-2"
                       >
@@ -188,7 +189,7 @@ export default function BusResultsClient() {
         bus={selectedBus}
         open={modalOpen}
         onOpenChangeAction={(v) => { setModalOpen(v); if (!v) setSelectedBus(null) }}
-        onBookedAction={() => console.log('bus booked')}
+        onBookedAction={() => { }}
       />
     </div>
   )

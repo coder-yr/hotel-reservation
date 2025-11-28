@@ -24,7 +24,7 @@ export default function FlightsPage() {
             <h1 className="text-3xl md:text-5xl font-bold text-white text-center mb-8 drop-shadow-md">
               Book Domestic and International Flights
             </h1>
-            <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 shadow-2xl ring-1 ring-black/5">
+            <div className="glass p-8 rounded-[2rem] shadow-2xl border-0">
               <form className="space-y-4">
                 <div className="flex gap-3 items-center justify-between border-b pb-4 mb-4">
                   <div className="flex items-center space-x-6">
@@ -47,19 +47,19 @@ export default function FlightsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                   <div className="md:col-span-2 space-y-1">
                     <label className="text-xs font-bold uppercase text-muted-foreground">From</label>
-                    <input className="w-full p-3 bg-secondary/30 border-0 rounded-xl font-semibold text-lg focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Delhi (DEL)" />
+                    <input className="w-full p-3 glass border-0 rounded-xl font-semibold text-lg focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-500" placeholder="Delhi (DEL)" />
                   </div>
                   <div className="md:col-span-2 space-y-1">
                     <label className="text-xs font-bold uppercase text-muted-foreground">To</label>
-                    <input className="w-full p-3 bg-secondary/30 border-0 rounded-xl font-semibold text-lg focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Bengaluru (BLR)" />
+                    <input className="w-full p-3 glass border-0 rounded-xl font-semibold text-lg focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-500" placeholder="Bengaluru (BLR)" />
                   </div>
                   <div className="md:col-span-1 space-y-1">
                     <label className="text-xs font-bold uppercase text-muted-foreground">Departure</label>
-                    <input type="date" className="w-full p-3 bg-secondary/30 border-0 rounded-xl font-medium" />
+                    <input type="date" className="w-full p-3 glass border-0 rounded-xl font-medium" />
                   </div>
                   <div className="md:col-span-1 space-y-1">
                     <label className="text-xs font-bold uppercase text-muted-foreground">Return</label>
-                    <input type="date" className="w-full p-3 bg-secondary/30 border-0 rounded-xl font-medium" />
+                    <input type="date" className="w-full p-3 glass border-0 rounded-xl font-medium" />
                   </div>
                 </div>
 

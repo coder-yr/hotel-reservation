@@ -31,8 +31,17 @@ export function SuggestionModal({ isOpen, onClose, suggestions }: SuggestionModa
             Your selected room is unavailable. Here are some AI-powered alternatives based on your preferences.
           </DialogDescription>
         </DialogHeader>
-        <div className="py-4 whitespace-pre-wrap text-sm text-muted-foreground bg-secondary p-4 rounded-md">
-            {suggestions.alternativeAccommodations}
+        <div className="py-4">
+          <div className="bg-muted/50 p-4 rounded-lg space-y-3 max-h-[300px] overflow-y-auto">
+            {suggestions.alternativeAccommodations.split(',').map((item, i) => (
+              <div key={i} className="flex items-center gap-3 bg-background p-3 rounded-md shadow-sm border border-border/50">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">
+                  {i + 1}
+                </div>
+                <span className="text-sm font-medium text-foreground">{item.trim()}</span>
+              </div>
+            ))}
+          </div>
         </div>
         <DialogFooter>
           <Button onClick={onClose} variant="outline">Close</Button>

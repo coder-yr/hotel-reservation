@@ -13,14 +13,14 @@ import { Badge } from './ui/badge';
 import Link from 'next/link';
 import { Button } from './ui/button';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
 import { Timestamp, collection, onSnapshot, query, where, orderBy } from 'firebase/firestore';
@@ -72,7 +72,7 @@ export function UserBookings() {
                 });
                 // No need to fetch, real-time listener will update the UI
             } catch (error) {
-                 toast({
+                toast({
                     variant: "destructive",
                     title: "Cancellation Failed",
                     description: (error as Error).message || "There was a problem cancelling your booking.",
@@ -117,7 +117,7 @@ export function UserBookings() {
                 {bookings.map((booking) => {
                     const fromDate = booking.fromDate as Date;
                     const toDate = booking.toDate as Date;
-                    
+
                     const isCancelled = booking.status.trim().toLowerCase() === 'cancelled';
                     const isDateInPast = startOfDay(fromDate) < startOfDay(new Date());
 
@@ -196,22 +196,22 @@ export function UserBookings() {
                     )
                 })}
             </div>
-            
+
             <AlertDialog open={!!bookingToCancel} onOpenChange={() => setBookingToCancel(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        This action cannot be undone. This will permanently cancel your booking
-                        for <span className="font-semibold">{bookingToCancel?.hotelName}</span>. Please review the hotel's cancellation policy.
-                    </AlertDialogDescription>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently cancel your booking
+                            for <span className="font-semibold">{bookingToCancel?.hotelName}</span>. Please review the hotel's cancellation policy.
+                        </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                    <AlertDialogCancel>Back</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleCancelBooking} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">
-                        {isCancelling ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                        Yes, cancel booking
-                    </AlertDialogAction>
+                        <AlertDialogCancel>Back</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleCancelBooking} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">
+                            {isCancelling ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                            Yes, cancel booking
+                        </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

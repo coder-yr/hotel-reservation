@@ -8,7 +8,7 @@ export const FilterSidebar = () => {
   const departureTimes = ["Before 6 AM", "6 AM to 12 PM", "12 PM to 6 PM", "After 6 PM"];
   const amenities = ["WiFi", "Water Bottle", "Charging Point", "Reading Light", "Emergency Exit"];
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6 sticky top-24">
+    <div className="glass-card rounded-xl border-0 p-6 space-y-6 sticky top-24">
       <div>
         <h3 className="font-semibold text-lg mb-4">FILTERS</h3>
         <Separator />

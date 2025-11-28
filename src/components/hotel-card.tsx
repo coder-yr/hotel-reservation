@@ -1,19 +1,20 @@
 
-
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { Hotel } from '@/lib/types';
 import { MapPin, Star } from 'lucide-react';
 import { cn, formatINR } from '@/lib/utils';
+import { memo } from 'react';
 
 interface HotelCardProps {
   hotel: Hotel;
   price?: number;
   variant?: 'default' | 'compact';
+  priority?: boolean;
 }
 
-export function HotelCard({ hotel, price, variant = 'default' }: HotelCardProps) {
+function HotelCardComponent({ hotel, price, variant = 'default', priority = false }: HotelCardProps) {
 
   if (variant === 'compact') {
     return (
@@ -22,10 +23,10 @@ export function HotelCard({ hotel, price, variant = 'default' }: HotelCardProps)
           <Image
             src={hotel.coverImage}
             alt={`Exterior of ${hotel.name}`}
-            layout="fill"
-            objectFit="cover"
-            data-ai-hint={(hotel as any)['data-ai-hint'] || 'hotel exterior'}
-            className="group-hover:scale-105 transition-transform duration-300"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            priority={priority}
           />
           {hotel.category && (
             <Badge className="absolute top-2 right-2" variant="secondary">{hotel.category}</Badge>
@@ -49,15 +50,15 @@ export function HotelCard({ hotel, price, variant = 'default' }: HotelCardProps)
   }
 
   return (
-    <Card className="group overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 border-border/50">
+    <Card className="glass-card group overflow-hidden h-full flex flex-col transition-all duration-300 hover:scale-[1.02] border-0">
       <div className="relative h-56 w-full">
         <Image
           src={hotel.coverImage}
           alt={`Exterior of ${hotel.name}`}
-          layout="fill"
-          objectFit="cover"
-          data-ai-hint={(hotel as any)['data-ai-hint'] || 'hotel exterior'}
-          className="group-hover:scale-105 transition-transform duration-500"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          priority={priority}
         />
         {hotel.category && (
           <Badge className="absolute top-2 right-2" variant="secondary">{hotel.category}</Badge>
@@ -92,3 +93,5 @@ export function HotelCard({ hotel, price, variant = 'default' }: HotelCardProps)
     </Card>
   );
 }
+
+export const HotelCard = memo(HotelCardComponent);

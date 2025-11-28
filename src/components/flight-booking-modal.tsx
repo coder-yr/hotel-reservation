@@ -2,6 +2,7 @@
 
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import {
   Dialog,
   DialogContent,
@@ -102,14 +103,14 @@ export default function FlightBookingModal({ flight, open, onOpenChangeAction, o
 
         <div className="mt-4 overflow-auto max-h-[60vh]">
           {step === 1 ? (
-            <img src="/images/flight-depart.svg" alt="Depart" className="w-full max-h-[60vh] object-contain rounded" />
+            <Image src="/images/flight-depart.svg" alt="Depart" width={800} height={600} className="w-full max-h-[60vh] object-contain rounded" />
           ) : (
-            <img src="/images/flight-return.svg" alt="Return" className="w-full max-h-[60vh] object-contain rounded" />
+            <Image src="/images/flight-return.svg" alt="Return" width={800} height={600} className="w-full max-h-[60vh] object-contain rounded" />
           )}
         </div>
 
         <DialogFooter>
-            <div className="flex w-full items-center justify-between">
+          <div className="flex w-full items-center justify-between">
             <button
               onClick={handleBack}
               className="px-4 py-2 border rounded text-sm bg-card"

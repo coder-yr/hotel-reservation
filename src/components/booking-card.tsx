@@ -109,6 +109,7 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
                     hotelId: hotel.id,
                     fromDate: dateRange.from!,
                     toDate: dateRange.to!,
+                    totalPrice: finalTotal,
                 });
                 toast({
                     title: "Booking Confirmed!",

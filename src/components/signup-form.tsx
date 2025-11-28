@@ -148,7 +148,7 @@ export function SignupForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+        <Button type="submit" className="w-full h-12 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity text-white font-bold text-base shadow-lg" disabled={form.formState.isSubmitting}>
           {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Create Account
         </Button>

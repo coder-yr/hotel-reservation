@@ -39,9 +39,10 @@ export function ImageGrid({ images }: ImageGridProps) {
                             <Image
                                 src={images[0]}
                                 alt="Main hotel view"
-                                layout="fill"
-                                objectFit="cover"
-                                className="bg-muted group-hover:opacity-90 transition-opacity"
+                                fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                className="object-cover bg-muted group-hover:opacity-90 transition-opacity"
+                                priority
                             />
                         </div>
                     </div>
@@ -52,9 +53,10 @@ export function ImageGrid({ images }: ImageGridProps) {
                             <Image
                                 src={src}
                                 alt={`Hotel view ${index + 2}`}
-                                layout="fill"
-                                objectFit="cover"
-                                className="bg-muted group-hover:opacity-90 transition-opacity"
+                                fill
+                                sizes="(max-width: 768px) 50vw, 25vw"
+                                className="object-cover bg-muted group-hover:opacity-90 transition-opacity"
+                                loading="lazy"
                             />
                         </div>
                     ))}
@@ -79,8 +81,10 @@ export function ImageGrid({ images }: ImageGridProps) {
                                         <Image
                                             src={src}
                                             alt={`Gallery image ${index + 1}`}
-                                            layout="fill"
-                                            objectFit="contain"
+                                            fill
+                                            sizes="100vw"
+                                            className="object-contain"
+                                            loading={index > 2 ? "lazy" : undefined}
                                         />
                                     </div>
                                 </CarouselItem>

@@ -27,8 +27,29 @@ const ptSans = PT_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Lodgify Lite',
-  description: 'A modern hotel reservation system.',
+  title: 'Lodgify Lite | Hotel, Flight & Bus Bookings',
+  description: 'A modern hotel reservation system offering seamless booking experiences for hotels, flights, and buses.',
+  openGraph: {
+    title: 'Lodgify Lite',
+    description: 'Book your perfect stay, flight, or bus ride with ease.',
+    url: 'https://lodgify-lite.vercel.app',
+    siteName: 'Lodgify Lite',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Lodgify Lite',
+    description: 'A modern hotel reservation system.',
+    images: ['/og-image.jpg'],
+  },
 };
 
 export default function RootLayout({
@@ -42,15 +63,15 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
         >
-            <AuthProvider>
-                {children}
-                <Toaster />
-            </AuthProvider>
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

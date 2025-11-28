@@ -50,7 +50,7 @@ export const BusCard = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 mb-4 overflow-hidden">
+    <div className="glass-card mb-4 overflow-hidden hover:scale-[1.005] transition-all duration-300 border-0">
       {/* Main Card Content */}
       <div className="p-5 flex flex-col md:flex-row gap-6">
         {/* Operator Info */}
@@ -104,7 +104,7 @@ export const BusCard = ({
       </div>
 
       {/* Footer / Action Bar */}
-      <div className="bg-gray-50 px-5 py-3 flex items-center justify-between border-t border-gray-100">
+      <div className="bg-slate-50/50 dark:bg-slate-900/50 px-5 py-3 flex items-center justify-between border-t border-white/10">
         <div className="text-xs text-gray-500">
           <span className="font-bold text-gray-700">{seatsAvailable}</span> Seats available
         </div>
@@ -118,7 +118,7 @@ export const BusCard = ({
 
       {/* Inline Seat & Point Selection */}
       {expanded && (
-        <div className="border-t border-gray-200 p-6 bg-gray-50 animate-in slide-in-from-top-2 duration-300">
+        <div className="border-t border-white/10 p-6 bg-slate-50/50 dark:bg-slate-900/50 animate-in slide-in-from-top-2 duration-300">
           <div className="flex flex-col xl:flex-row gap-8">
             {/* Seat Selection Area */}
             <div className="flex-1 border-r border-gray-200 pr-8">

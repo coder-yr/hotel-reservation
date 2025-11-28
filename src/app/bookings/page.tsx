@@ -10,8 +10,8 @@ export default function BookingsPage() {
       <Header />
       <main className="flex-1">
         {/* Hero header similar to design: peach band with title */}
-        <div className="w-full bg-amber-100/80"> 
-          <div className="container mx-auto px-4 py-12">
+        <div className="w-full bg-amber-100/80">
+          <div className="container mx-auto px-4 pt-32 pb-12">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-amber-200 rounded">
                 <BookMarked className="h-8 w-8 text-rose-600" />
