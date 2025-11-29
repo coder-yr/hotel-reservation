@@ -36,7 +36,7 @@ export default function OwnerPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-1 py-12 md:py-24 bg-secondary">
+      <main className="flex-1 pt-32 pb-12 bg-background">
         <div className="container mx-auto px-4">
           <OwnerDashboard />
         </div>

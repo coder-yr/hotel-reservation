@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useTransition } from 'react';
@@ -6,7 +5,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { getBookingsByUser, cancelBooking, fromFirestore } from '@/lib/data';
 import type { Booking } from '@/lib/types';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Loader2, BedDouble, Calendar, MapPin, Ban } from 'lucide-react';
+import { Loader2, BedDouble, Calendar, MapPin, Ban, Plane, Clock, Armchair } from 'lucide-react';
 import Image from 'next/image';
 import { format, isPast, startOfDay } from 'date-fns';
 import { Badge } from './ui/badge';
@@ -41,13 +40,10 @@ export function UserBookings() {
             const bookingsQuery = query(
                 collection(db, 'bookings'),
                 where('userId', '==', user.id)
-                // Removed orderBy to prevent index requirement for this demo.
-                // Sorting will be done client-side.
             );
 
             const unsubscribe = onSnapshot(bookingsQuery, (snapshot) => {
                 const userBookings = snapshot.docs.map(doc => fromFirestore<Booking>(doc)).filter(Boolean) as Booking[];
-                // Sort client-side
                 userBookings.sort((a, b) => (b.fromDate as Date).getTime() - (a.fromDate as Date).getTime());
                 setBookings(userBookings);
                 setLoading(false);
@@ -70,7 +66,6 @@ export function UserBookings() {
                     title: "Booking Cancelled",
                     description: "Your reservation has been successfully cancelled.",
                 });
-                // No need to fetch, real-time listener will update the UI
             } catch (error) {
                 toast({
                     variant: "destructive",
@@ -117,11 +112,105 @@ export function UserBookings() {
                 {bookings.map((booking) => {
                     const fromDate = booking.fromDate as Date;
                     const toDate = booking.toDate as Date;
-
                     const isCancelled = booking.status.trim().toLowerCase() === 'cancelled';
                     const isDateInPast = startOfDay(fromDate) < startOfDay(new Date());
-
                     const canCancel = !isCancelled && !isDateInPast;
+                    const isFlight = booking.roomId.startsWith('flight-');
+
+                    if (isFlight) {
+                        const [origin, destination] = booking.hotelLocation ? booking.hotelLocation.split(' - ') : ['Origin', 'Dest'];
+                        const airlineName = booking.hotelName.split('(')[0].trim();
+                        const flightInfo = booking.roomTitle;
+
+                        return (
+                            <div key={booking.id} className="relative bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+                                {/* Ticket Perforation Visual */}
+                                <div className="absolute left-0 top-1/2 -translate-x-1/2 w-6 h-6 bg-gray-50 rounded-full border-r border-gray-200" />
+                                <div className="absolute right-0 top-1/2 translate-x-1/2 w-6 h-6 bg-gray-50 rounded-full border-l border-gray-200" />
+
+                                <div className="flex flex-col md:flex-row">
+                                    {/* Main Ticket Section */}
+                                    <div className="flex-1 p-6 border-b md:border-b-0 md:border-r border-dashed border-gray-300 relative">
+                                        <div className="flex justify-between items-start mb-6">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center text-red-600">
+                                                    <Plane className="w-6 h-6" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-bold text-lg text-gray-900">{airlineName}</h3>
+                                                    <p className="text-xs text-gray-500">{flightInfo.split('•')[0].trim()}</p>
+                                                </div>
+                                            </div>
+                                            <Badge className={`${isCancelled ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'} border-0`}>
+                                                {booking.status}
+                                            </Badge>
+                                        </div>
+
+                                        <div className="flex items-center justify-between gap-8">
+                                            <div className="text-center md:text-left">
+                                                <div className="text-2xl font-bold text-gray-900">{origin?.substring(0, 3).toUpperCase()}</div>
+                                                <div className="text-xs text-gray-500">{format(fromDate, 'HH:mm')}</div>
+                                                <div className="text-xs text-gray-400">{format(fromDate, 'dd MMM')}</div>
+                                            </div>
+
+                                            <div className="flex-1 flex flex-col items-center px-4">
+                                                <div className="text-xs text-gray-400 mb-1">Duration</div>
+                                                <div className="w-full h-[1px] bg-gray-300 relative flex items-center justify-center">
+                                                    <Plane className="w-4 h-4 text-gray-300 absolute bg-white px-1" />
+                                                </div>
+                                                <div className="text-xs text-gray-400 mt-1">Non-stop</div>
+                                            </div>
+
+                                            <div className="text-center md:text-right">
+                                                <div className="text-2xl font-bold text-gray-900">{destination?.substring(0, 3).toUpperCase()}</div>
+                                                <div className="text-xs text-gray-500">{format(toDate, 'HH:mm')}</div>
+                                                <div className="text-xs text-gray-400">{format(toDate, 'dd MMM')}</div>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-6 flex items-center gap-6 text-sm text-gray-600">
+                                            <div className="flex items-center gap-2">
+                                                <Armchair className="w-4 h-4" />
+                                                <span>{flightInfo.split('•')[1]?.trim() || 'Any Seat'}</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Clock className="w-4 h-4" />
+                                                <span>Check-in closes 60m prior</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Price & Action Section */}
+                                    <div className="w-full md:w-64 bg-gray-50 p-6 flex flex-col justify-between items-center text-center">
+                                        <div>
+                                            <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Total Fare</p>
+                                            <p className="text-2xl font-bold text-gray-900">
+                                                {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(booking.totalPrice || 0)}
+                                            </p>
+                                        </div>
+
+                                        <div className="w-full space-y-3 mt-4">
+                                            {canCancel ? (
+                                                <Button
+                                                    variant="outline"
+                                                    className="w-full border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+                                                    onClick={() => setBookingToCancel(booking)}
+                                                    disabled={isCancelling}
+                                                >
+                                                    {isCancelling ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Ban className="mr-2 h-4 w-4" />}
+                                                    Cancel Booking
+                                                </Button>
+                                            ) : (
+                                                <div className="text-xs text-gray-400">
+                                                    Booking ID: <span className="font-mono">{booking.id.slice(0, 8)}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    }
 
                     return (
                         <Card key={booking.id} className="overflow-hidden rounded-xl shadow-lg transition-all hover:shadow-2xl border border-pink-100">
