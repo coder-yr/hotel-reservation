@@ -12,6 +12,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { db } from '@/lib/firebase'
 import { addDoc, collection, serverTimestamp, Timestamp } from 'firebase/firestore'
 import { Plane, Check, X, Calendar, Briefcase, Utensils, Armchair, RefreshCw, Luggage, ArrowLeft, User } from "lucide-react"
+import PassengerDetailsForm, { PassengerDetails } from "./passenger-details-form"
 
 type FlightInfo = {
   id: string
@@ -83,6 +84,14 @@ export default function FlightBookingModal({ flight, open, onOpenChangeAction, o
   const [step, setStep] = useState(1) // 1: Fare, 2: Seat, 3: Passenger
   const [selectedFare, setSelectedFare] = useState('value')
   const [selectedSeat, setSelectedSeat] = useState<string | null>(null)
+  const [passengerDetails, setPassengerDetails] = useState<PassengerDetails>({
+    firstName: '',
+    lastName: '',
+    age: '',
+    gender: 'male',
+    passportNumber: '',
+    nationality: 'IN'
+  })
   const router = useRouter()
   const { user } = useAuth();
 
@@ -126,6 +135,7 @@ export default function FlightBookingModal({ flight, open, onOpenChangeAction, o
         coverImage: '/images/flight-depart.svg',
         userName: user.name,
         hotelOwnerId: user.id,
+        passengerDetails: passengerDetails
       });
 
       onBookedAction?.();
@@ -197,8 +207,8 @@ export default function FlightBookingModal({ flight, open, onOpenChangeAction, o
                   <div
                     key={option.id}
                     className={`flex-1 min-w-[240px] rounded-xl border transition-all duration-200 bg-white flex flex-col ${selectedFare === option.id
-                        ? 'border-black ring-1 ring-black shadow-lg'
-                        : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-black ring-1 ring-black shadow-lg'
+                      : 'border-gray-200 hover:border-gray-300'
                       }`}
                   >
                     <div className={`p-4 rounded-t-xl ${selectedFare === option.id ? 'bg-gray-50' : ''}`}>
@@ -207,8 +217,8 @@ export default function FlightBookingModal({ flight, open, onOpenChangeAction, o
                       <button
                         onClick={() => setSelectedFare(option.id)}
                         className={`w-full mt-4 py-2.5 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 ${selectedFare === option.id
-                            ? 'bg-gray-900 text-white'
-                            : 'border border-gray-300 hover:bg-gray-50 text-gray-700'
+                          ? 'bg-gray-900 text-white'
+                          : 'border border-gray-300 hover:bg-gray-50 text-gray-700'
                           }`}
                       >
                         {selectedFare === option.id ? <><Check className="w-4 h-4" /> Selected</> : 'Select'}
@@ -315,6 +325,11 @@ export default function FlightBookingModal({ flight, open, onOpenChangeAction, o
               </div>
             </div>
           )}
+
+
+          {step === 3 && (
+            <PassengerDetailsForm details={passengerDetails} onChange={setPassengerDetails} />
+          )}
         </div>
 
         {/* Footer */}
@@ -325,11 +340,12 @@ export default function FlightBookingModal({ flight, open, onOpenChangeAction, o
             )}
           </div>
           <button
-            onClick={() => step === 2 ? handleBook() : setStep(step + 1)}
-            disabled={step === 2 && !selectedSeat}
+            onClick={() => step === 3 ? handleBook() : setStep(step + 1)}
+            disabled={(step === 2 && !selectedSeat) || (step === 3 && (!passengerDetails.firstName || !passengerDetails.lastName || !passengerDetails.age))}
             className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-3 rounded-lg font-bold text-lg transition-colors shadow-lg shadow-orange-500/20"
           >
-            {step === 2 ? 'Continue to Passenger' : 'Continue'}
+
+            {step === 3 ? 'Confirm Booking' : 'Continue'}
           </button>
         </div>
       </DialogContent>
