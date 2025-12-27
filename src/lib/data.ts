@@ -188,7 +188,6 @@ export const getRoomById = async (id: string): Promise<Room | undefined> => {
 export const updateHotelStatus = async (id: string, status: 'approved' | 'rejected'): Promise<void> => {
     const hotelRef = doc(hotelsCol, id);
     await updateDoc(hotelRef, { status });
-    console.log(`Updated hotel ${id} to ${status} in Firestore.`);
 }
 
 export const createHotel = async (hotelData: NewHotel): Promise<Hotel> => {
@@ -218,13 +217,11 @@ export const deleteHotel = async (id: string): Promise<void> => {
     // Delete the hotel
     const hotelRef = doc(hotelsCol, id);
     await deleteDoc(hotelRef);
-    console.log(`Deleted hotel ${id} and ${roomsSnapshot.size} associated rooms from Firestore.`);
 }
 
 export const updateRoomStatus = async (id: string, status: 'approved' | 'rejected'): Promise<void> => {
     const roomRef = doc(roomsCol, id);
     await updateDoc(roomRef, { status });
-    console.log(`Updated room ${id} to ${status} in Firestore.`);
 }
 
 export const getHotelsByOwner = async (ownerId: string): Promise<Hotel[]> => {
@@ -276,8 +273,6 @@ export const createBooking = async (bookingData: NewBooking): Promise<Booking> =
     try {
         const from = bookingData.fromDate;
         const to = bookingData.toDate;
-
-        console.debug("createBooking called with:", { bookingData });
 
         if (!from || !to || !bookingData.userId || !bookingData.roomId) {
             throw new Error("Missing required booking information.");
@@ -340,7 +335,6 @@ export const createBooking = async (bookingData: NewBooking): Promise<Booking> =
         };
 
         const docRef = await addDoc(bookingsCol, newBookingData);
-        console.log("New booking created in Firestore:", docRef.id);
 
         const finalBooking: Booking = {
             id: docRef.id,
@@ -403,7 +397,6 @@ export const cancelBooking = async (bookingId: string): Promise<void> => {
         status: 'cancelled',
         cancelledAt: serverTimestamp()
     });
-    console.log(`Booking ${bookingId} cancelled.`);
 };
 
 // Review Functions
@@ -434,7 +427,6 @@ export const getReviewsByHotelId = async (hotelId: string): Promise<Review[]> =>
 export const deleteReview = async (hotelId: string, reviewId: string): Promise<void> => {
     const reviewRef = doc(db, `hotels/${hotelId}/reviews`, reviewId);
     await deleteDoc(reviewRef);
-    console.log(`Deleted review ${reviewId} from hotel ${hotelId}.`);
 };
 
 
@@ -473,7 +465,6 @@ export async function createBus(busData: any) {
 export const deleteBus = async (id: string): Promise<void> => {
     const busRef = doc(busesCol, id);
     await deleteDoc(busRef);
-    console.log(`Deleted bus ${id} from Firestore.`);
 }
 
 export const updateBus = async (id: string, busData: any): Promise<void> => {
@@ -482,5 +473,4 @@ export const updateBus = async (id: string, busData: any): Promise<void> => {
     // For now, we'll assume basic details update.
     const { seats, ...updateData } = busData;
     await updateDoc(busRef, updateData);
-    console.log(`Updated bus ${id} in Firestore.`);
 }

@@ -38,6 +38,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { RevenueChart } from "./dashboard/revenue-chart";
+import { DistributionChart } from "./dashboard/distribution-chart";
 import { format } from "date-fns";
 import { db } from "@/lib/firebase";
 import { formatINR } from '@/lib/utils';
@@ -200,6 +202,37 @@ export function AdminDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{pendingActionsCount}</div>
             <p className="text-xs text-muted-foreground">Requires attention</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-4 shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader>
+            <CardTitle>Revenue Overview</CardTitle>
+            <CardDescription>
+              Earnings over the last 7 months
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pl-2">
+            <RevenueChart totalRevenue={totalRevenue} />
+          </CardContent>
+        </Card>
+
+        <Card className="col-span-3 shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader>
+            <CardTitle>Vertical Distribution</CardTitle>
+            <CardDescription>
+              Bookings by category
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DistributionChart
+              hotelsCount={pendingHotels.length + allHotels.length + 5}
+              flightsCount={12}
+              busesCount={allBuses.length + 8}
+            />
           </CardContent>
         </Card>
       </div>

@@ -103,7 +103,7 @@ const sampleFlightsData = [
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, getDocs, addDoc, serverTimestamp, writeBatch, doc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import type { NewHotel, NewUser, NewRoom, NewReview } from './types';
+import type { NewHotel, NewUser, NewRoom, NewReview, Hotel } from './types';
 
 
 export const firebaseConfig = {
@@ -442,3 +442,16 @@ const seedDatabase = async () => {
 
 // Immediately invoke the seeding function to ensure data is available on startup
 seedDatabase();
+
+export async function getApprovedHotels() {
+    try {
+        const querySnapshot = await getDocs(collection(db, 'hotels'));
+        return querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        })) as Hotel[];
+    } catch (error) {
+        console.error("Error fetching hotels:", error);
+        return [];
+    }
+}

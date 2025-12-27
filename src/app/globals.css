@@ -19,11 +19,12 @@
     /* #F43F5E */
 
     /* Backgrounds & surfaces */
-    --background: 0 0% 100%;
-    /* #FFFFFF */
-    --section-background: 210 40% 98%;
-    /* #F8FAFC (Slate-50) */
+    --background: 210 40% 98%;
+    /* Soft Slate-50 background */
+    --section-background: 0 0% 100%;
+    /* White sections for contrast */
     --card: 0 0% 100%;
+    /* White cards to pop against soft bg */
     --card-foreground: 215 28% 17%;
     /* #1E293B (Slate-800) */
     --card-border: 214 32% 91%;
@@ -74,9 +75,11 @@
     --accent: 344 93% 71%;
 
     /* Backgrounds & surfaces */
-    --background: 215 28% 13%;
-    --section-background: 215 28% 10%;
-    --card: 215 28% 17%;
+    --background: 240 33% 4%;
+    /* #06060c Matches Spline 3D Scene */
+    --section-background: 240 33% 4%;
+    --card: 215 28% 13%;
+    /* Keep cards slightly lighter */
     --card-foreground: 210 40% 98%;
     --card-border: 215 28% 25%;
     --overlay: rgba(0, 0, 0, 0.7);
