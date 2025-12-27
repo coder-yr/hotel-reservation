@@ -82,6 +82,14 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
+  transpilePackages: ['@splinetool/react-spline'],
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@splinetool/react-spline': require('path').resolve(__dirname, 'node_modules/@splinetool/react-spline/dist/react-spline.js'),
+    };
+    return config;
+  },
 };
 
 export default nextConfig;
