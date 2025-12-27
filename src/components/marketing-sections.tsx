@@ -13,7 +13,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const Spline = dynamic(() => import('@splinetool/react-spline').then(mod => mod.default), {
+const Spline = dynamic(() => import('@splinetool/react-spline'), {
     ssr: false,
 });
 
