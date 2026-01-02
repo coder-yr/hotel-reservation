@@ -11,7 +11,9 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { db } from '@/lib/firebase'
 import { addDoc, collection, serverTimestamp, Timestamp } from 'firebase/firestore'
-import { Plane, Check, X, Calendar, Briefcase, Utensils, Armchair, RefreshCw, Luggage, ArrowLeft, User } from "lucide-react"
+import { Plane, Check, X, Calendar, Briefcase, Utensils, Armchair, RefreshCw, Luggage, ArrowLeft, Info, ChevronRight, CreditCard, User, Sparkles, AlertCircle } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { PaymentGateway } from "./payment-gateway"
 
 type FlightInfo = {
   id: string
@@ -37,52 +39,63 @@ type Props = {
 const FARE_OPTIONS = [
   {
     id: 'value',
-    name: 'ECO VALUE',
+    name: 'SAVER',
     priceOffset: 0,
+    color: 'bg-white',
+    borderColor: 'border-slate-200',
+    titleColor: 'text-slate-700',
+    description: "Travel light, travel smart.",
     benefits: [
-      { icon: RefreshCw, text: 'Cancellation fee', included: false, label: 'Starting ₹3,500' },
-      { icon: Calendar, text: 'Date change fee', included: false, label: 'Starting ₹3,000' },
-      { icon: Armchair, text: 'Seat selection', included: false, label: 'Chargeable' },
-      { icon: Utensils, text: 'Meal selection', included: false, label: 'Chargeable' },
-      { icon: Briefcase, text: 'Cabin bag', included: true, label: '7 kg' },
-      { icon: Luggage, text: 'Check-in bag', included: true, label: '15 kg' },
+      { icon: Briefcase, text: 'Cabin bag (7kg)', included: true },
+      { icon: Luggage, text: 'Check-in bag (15kg)', included: true },
+      { icon: Armchair, text: 'Seat selection', included: false },
+      { icon: Utensils, text: 'Meal', included: false },
+      { icon: RefreshCw, text: 'Cancellation', included: false },
     ]
   },
   {
     id: 'classic',
-    name: 'ECO CLASSIC',
-    priceOffset: 1056,
+    name: 'CLASSIC',
+    recommended: true,
+    priceOffset: 1200,
+    color: 'bg-indigo-50/50',
+    borderColor: 'border-indigo-200',
+    titleColor: 'text-indigo-700',
+    description: "Extra flexibility & comfort.",
     benefits: [
-      { icon: RefreshCw, text: 'Cancellation fee', included: false, label: 'Starting ₹2,500' },
-      { icon: Calendar, text: 'Date change fee', included: true, label: 'Free' },
-      { icon: Armchair, text: 'Seat selection', included: true, label: 'Free Standard' },
-      { icon: Utensils, text: 'Meal selection', included: true, label: 'Free Standard' },
-      { icon: Briefcase, text: 'Cabin bag', included: true, label: '7 kg' },
-      { icon: Luggage, text: 'Check-in bag', included: true, label: '15 kg' },
+      { icon: Briefcase, text: 'Cabin bag (7kg)', included: true },
+      { icon: Luggage, text: 'Check-in bag (15kg)', included: true },
+      { icon: Armchair, text: 'Standard Seat', included: true },
+      { icon: Utensils, text: 'Meal', included: true },
+      { icon: RefreshCw, text: 'Cancellation (Fee)', included: true, info: "Low Fee" },
     ]
   },
   {
     id: 'flex',
-    name: 'ECO FLEX',
-    priceOffset: 3166,
+    name: 'FLEXI PLUS',
+    priceOffset: 3500,
+    color: 'bg-amber-50/50',
+    borderColor: 'border-amber-200',
+    titleColor: 'text-amber-700',
+    description: "Total peace of mind.",
     benefits: [
-      { icon: RefreshCw, text: 'Cancellation fee', included: true, label: 'Free' },
-      { icon: Calendar, text: 'Date change fee', included: true, label: 'Free' },
-      { icon: Armchair, text: 'Seat selection', included: true, label: 'Free Any Seat' },
-      { icon: Utensils, text: 'Meal selection', included: true, label: 'Free Any Meal' },
-      { icon: Briefcase, text: 'Cabin bag', included: true, label: '7 kg' },
-      { icon: Luggage, text: 'Check-in bag', included: true, label: '20 kg' },
+      { icon: Briefcase, text: 'Cabin bag (7kg)', included: true },
+      { icon: Luggage, text: 'Check-in bag (25kg)', included: true },
+      { icon: Armchair, text: 'Any Seat Free', included: true },
+      { icon: Utensils, text: 'Gourmet Meal', included: true },
+      { icon: RefreshCw, text: 'Free Cancellation', included: true },
     ]
   }
 ]
 
 // Mock Seat Map Data
-const SEAT_ROWS = 10;
+const SEAT_ROWS = 12;
 
 export default function FlightBookingModal({ flight, open, onOpenChangeAction, onBookedAction, originCity, destinationCity, travelDate }: Props) {
   const [step, setStep] = useState(1) // 1: Fare, 2: Seat, 3: Passenger
-  const [selectedFare, setSelectedFare] = useState('value')
+  const [selectedFare, setSelectedFare] = useState('classic')
   const [selectedSeat, setSelectedSeat] = useState<string | null>(null)
+  const [isBooking, setIsBooking] = useState(false)
   const router = useRouter()
   const { user } = useAuth();
 
@@ -103,16 +116,27 @@ export default function FlightBookingModal({ flight, open, onOpenChangeAction, o
   const seatPrice = selectedSeat ? getSeatPrice(parseInt(selectedSeat.slice(0, -1)), selectedSeat.slice(-1)) : 0
   const totalPrice = basePrice + (selectedOption?.priceOffset || 0) + seatPrice
 
-  const handleBook = async () => {
+  // State for Payment Modal
+  const [showPayment, setShowPayment] = useState(false);
+
+  const handleBook = () => {
+    if (!user) {
+      alert('Please log in to complete booking.');
+      return;
+    }
+    setShowPayment(true);
+  }
+
+  const onPaymentSuccess = async () => {
+    setShowPayment(false);
     try {
-      if (!user) {
-        alert('Please log in to complete booking.');
-        return;
-      }
+      setIsBooking(true);
 
       const bookingsCol = collection(db, 'bookings');
+      // No need for fake delay here, payment gateway did it
+
       await addDoc(bookingsCol, {
-        userId: user.id,
+        userId: user!.id,
         roomId: flight ? `flight-${flight.id}` : `flight-unknown`,
         hotelId: flight ? `flight-${flight.id}` : `flight-unknown`,
         fromDate: Timestamp.fromDate(new Date(travelDate)),
@@ -123,9 +147,9 @@ export default function FlightBookingModal({ flight, open, onOpenChangeAction, o
         hotelName: flight ? `${flight.airline} (${selectedOption?.name})` : 'Flight Booking',
         hotelLocation: `${originCity} - ${destinationCity}`,
         roomTitle: `Flight ${flight?.flightNumber || ''} • Seat ${selectedSeat || 'Any'}`,
-        coverImage: '/images/flight-depart.svg',
-        userName: user.name,
-        hotelOwnerId: user.id,
+        coverImage: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2074&auto=format&fit=crop',
+        userName: user!.name,
+        hotelOwnerId: user!.id, // For now, mapping to self as placeholder
       });
 
       onBookedAction?.();
@@ -134,6 +158,8 @@ export default function FlightBookingModal({ flight, open, onOpenChangeAction, o
     } catch (err) {
       console.error('Failed to create booking doc:', err);
       alert('Failed to create booking: ' + (err as Error).message);
+    } finally {
+      setIsBooking(false);
     }
   }
 
@@ -141,198 +167,298 @@ export default function FlightBookingModal({ flight, open, onOpenChangeAction, o
 
   return (
     <Dialog open={open} onOpenChange={onOpenChangeAction}>
-      <DialogContent className="max-w-5xl w-full p-0 gap-0 bg-white overflow-hidden h-[90vh] flex flex-col">
-        {/* Header */}
-        <DialogHeader className="p-6 border-b shrink-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              {step > 1 && (
-                <button onClick={() => setStep(step - 1)} className="p-2 hover:bg-gray-100 rounded-full">
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
-              )}
-              <DialogTitle className="text-2xl font-bold">
-                {step === 1 ? 'Select your fare' : step === 2 ? 'Select your seat' : 'Passenger Details'}
-              </DialogTitle>
-            </div>
-            <div className="text-right">
-              <div className="text-sm text-gray-500">Total Amount</div>
-              <div className="text-xl font-bold text-orange-600">₹{totalPrice.toLocaleString()}</div>
-            </div>
-          </div>
+      <DialogContent className="max-w-5xl w-full p-0 gap-0 bg-slate-50 overflow-hidden h-[90vh] flex flex-col rounded-2xl shadow-2xl">
 
-          {/* Flight Summary */}
-          <div className="flex items-center gap-4 mt-4 bg-blue-50 p-3 rounded-lg">
-            <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center text-white shrink-0">
-              <Plane className="w-4 h-4" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-xs text-gray-500 truncate">
-                {originCity} → {destinationCity} • {new Date(travelDate).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })}
+        {/* Top Progress Bar */}
+        <div className="bg-white px-8 py-4 border-b flex items-center justify-between shrink-0 z-10">
+          <div className="flex items-center gap-2">
+            {step > 1 ? (
+              <button onClick={() => setStep(step - 1)} className="p-2 -ml-2 hover:bg-slate-100 rounded-full transition-colors mr-2">
+                <ArrowLeft className="w-5 h-5 text-slate-600" />
+              </button>
+            ) : (
+              <div className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 mr-2">
+                <Plane className="w-5 h-5 text-slate-800" />
               </div>
-              <div className="font-semibold text-sm truncate">
-                {flight.depart} - {flight.arrive} • {flight.duration}
+            )}
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 leading-tight">
+                {step === 1 && "Select Fare"}
+                {step === 2 && "Choose Seat"}
+                {step === 3 && "Review & Pay"}
+              </h2>
+              <div className="text-xs text-slate-500 font-medium tracking-wide">
+                {originCity} to {destinationCity}
               </div>
             </div>
           </div>
-        </DialogHeader>
 
-        {/* Content Area */}
-        <div className="flex-1 overflow-y-auto bg-gray-50/50">
+          {/* Stepper Dots */}
+          <div className="flex gap-2">
+            <div className={cn("h-1.5 w-8 rounded-full transition-colors", step >= 1 ? "bg-slate-900" : "bg-slate-200")} />
+            <div className={cn("h-1.5 w-8 rounded-full transition-colors", step >= 2 ? "bg-slate-900" : "bg-slate-200")} />
+            <div className={cn("h-1.5 w-8 rounded-full transition-colors", step >= 3 ? "bg-slate-900" : "bg-slate-200")} />
+          </div>
+        </div>
+
+        {/* Scrollable Content Area */}
+        <div className="flex-1 overflow-y-auto">
+
+          {/* STEP 1: FARE SELECTION */}
           {step === 1 && (
-            <div className="flex flex-col md:flex-row h-full">
-              {/* Sidebar Benefits Legend */}
-              <div className="hidden md:flex flex-col gap-6 p-6 w-64 text-sm font-medium text-gray-700 bg-white border-r">
-                <div className="flex items-center gap-3 h-5"><RefreshCw className="w-4 h-4" /> Cancellation fee</div>
-                <div className="flex items-center gap-3 h-5"><Calendar className="w-4 h-4" /> Date change fee</div>
-                <div className="flex items-center gap-3 h-5"><Armchair className="w-4 h-4" /> Seat selection</div>
-                <div className="flex items-center gap-3 h-5"><Utensils className="w-4 h-4" /> Meal selection</div>
-                <div className="flex items-center gap-3 h-5"><Briefcase className="w-4 h-4" /> Cabin bag/adult</div>
-                <div className="flex items-center gap-3 h-5"><Luggage className="w-4 h-4" /> Check-in bag/adult</div>
+            <div className="p-8 max-w-5xl mx-auto">
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold mb-2">Customize your journey</h3>
+                <p className="text-slate-500">Select the fare that suits your travel needs.</p>
               </div>
 
-              {/* Fare Cards */}
-              <div className="flex-1 flex overflow-x-auto p-6 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {FARE_OPTIONS.map((option) => (
                   <div
                     key={option.id}
-                    className={`flex-1 min-w-[240px] rounded-xl border transition-all duration-200 bg-white flex flex-col ${selectedFare === option.id
-                        ? 'border-black ring-1 ring-black shadow-lg'
-                        : 'border-gray-200 hover:border-gray-300'
-                      }`}
+                    onClick={() => setSelectedFare(option.id)}
+                    className={cn(
+                      "relative overflow-hidden rounded-2xl border-2 transition-all p-0 cursor-pointer hover:shadow-xl group",
+                      selectedFare === option.id
+                        ? `${option.borderColor} ring-1 ring-offset-2 ${option.borderColor} bg-white shadow-lg scale-[1.02] z-10`
+                        : "border-transparent bg-white shadow-sm hover:scale-[1.01]"
+                    )}
                   >
-                    <div className={`p-4 rounded-t-xl ${selectedFare === option.id ? 'bg-gray-50' : ''}`}>
-                      <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">{option.name}</div>
-                      <div className="text-2xl font-bold">₹{(basePrice + option.priceOffset).toLocaleString()}</div>
-                      <button
-                        onClick={() => setSelectedFare(option.id)}
-                        className={`w-full mt-4 py-2.5 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 ${selectedFare === option.id
-                            ? 'bg-gray-900 text-white'
-                            : 'border border-gray-300 hover:bg-gray-50 text-gray-700'
-                          }`}
-                      >
-                        {selectedFare === option.id ? <><Check className="w-4 h-4" /> Selected</> : 'Select'}
-                      </button>
+                    {option.recommended && (
+                      <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-violet-500 to-indigo-500" />
+                    )}
+                    {option.recommended && (
+                      <div className="absolute top-4 right-4 bg-indigo-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                        Recommended
+                      </div>
+                    )}
+
+                    <div className={cn("p-6 pb-4 border-b border-dashed", option.color)}>
+                      <h4 className={cn("font-extrabold text-xl tracking-tight mb-1", option.titleColor)}>{option.name}</h4>
+                      <p className="text-xs font-medium text-slate-500 mb-4 h-4">{option.description}</p>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-sm font-semibold text-slate-400">₹</span>
+                        <span className="text-3xl font-bold text-slate-900">{(basePrice + option.priceOffset).toLocaleString()}</span>
+                      </div>
                     </div>
-                    <div className="p-4 space-y-6 flex-1 border-t border-dashed">
+
+                    <div className="p-6 space-y-4">
                       {option.benefits.map((benefit, i) => (
-                        <div key={i} className="text-xs flex items-center gap-1 h-5">
-                          {benefit.included ? <Check className="w-4 h-4 text-green-600" /> : <X className="w-4 h-4 text-red-400" />}
-                          <span className={benefit.included ? 'text-gray-700' : 'text-gray-500'}>{benefit.label}</span>
+                        <div key={i} className="flex items-start gap-3">
+                          <div className={cn(
+                            "mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0",
+                            benefit.included ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-400"
+                          )}>
+                            {benefit.included ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
+                          </div>
+                          <div className="flex-1">
+                            <p className={cn("text-sm font-medium", benefit.included ? "text-slate-700" : "text-slate-400 line-through")}>
+                              {benefit.text}
+                            </p>
+                            {benefit.info && <p className="text-[10px] text-emerald-600 font-semibold">{benefit.info}</p>}
+                          </div>
                         </div>
                       ))}
                     </div>
+
+                    {selectedFare === option.id && (
+                      <div className="absolute bottom-4 right-4 text-emerald-500">
+                        <Check className="w-6 h-6" />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {step === 2 && (
-            <div className="flex justify-center p-8">
-              <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-200 relative max-w-md w-full">
-                {/* Plane Nose */}
-                <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-32 h-24 bg-gray-100 rounded-t-[100px] border-t border-x border-gray-200 z-0" />
 
-                <div className="relative z-10">
-                  <div className="flex justify-between mb-8 px-4 text-xs font-medium text-gray-500">
-                    <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-white border border-gray-300" /> Free</div>
-                    <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-blue-100 border border-blue-300" /> ₹150-350</div>
-                    <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-purple-100 border border-purple-300" /> Premium</div>
+          {/* STEP 2: SEAT SELECTION */}
+          {step === 2 && (
+            <div className="flex flex-col items-center py-8">
+              <div className="mb-6 flex items-center gap-6 text-sm font-medium bg-white px-6 py-2 rounded-full shadow-sm border">
+                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded border bg-white" /> Free</div>
+                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded border bg-indigo-50 border-indigo-200" /> ₹150-350</div>
+                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded border bg-amber-50 border-amber-200" /> Premium</div>
+                <div className="flex items-center gap-2"><div className="w-4 h-4 rounded border bg-emerald-500 border-emerald-600" /> Selected</div>
+                <div className="flex items-center gap-2 opacity-50"><div className="w-4 h-4 rounded bg-slate-200" /> Occupied</div>
+              </div>
+
+              {/* Plane Fuselage */}
+              <div className="relative bg-white pt-24 pb-12 px-12 rounded-[4rem] shadow-2xl border-2 border-slate-100 max-w-2xl w-full">
+                {/* Cockpit */}
+                <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-40 h-40 bg-gradient-to-b from-slate-200 to-white rounded-full opacity-50 blur-xl pointer-events-none" />
+                <div className="absolute top-8 left-1/2 -translate-x-1/2 w-16 h-1 border-b-4 border-slate-200 rounded-full" />
+
+                <div className="flex justify-center gap-10">
+                  {/* Left Block */}
+                  <div className="grid grid-cols-3 gap-3">
+                    {Array.from({ length: SEAT_ROWS }).map((_, row) => (
+                      <React.Fragment key={`left-${row}`}>
+                        {['A', 'B', 'C'].map(col => {
+                          const seatId = `${row + 1}${col}`;
+                          const price = getSeatPrice(row + 1, col);
+                          const isSelected = selectedSeat === seatId;
+                          const isPremium = row < 3;
+                          const isOccupied = row === 4 && col === 'B'; // Mock occupied
+
+                          return (
+                            <button
+                              key={seatId}
+                              disabled={isOccupied}
+                              onClick={() => setSelectedSeat(seatId)}
+                              className={cn(
+                                "w-10 h-10 rounded-lg border transition-all flex flex-col items-center justify-center relative group",
+                                isOccupied ? "bg-slate-100 border-slate-200 cursor-not-allowed opacity-50" :
+                                  isSelected ? "bg-emerald-500 border-emerald-600 text-white shadow-lg ring-2 ring-emerald-200 z-10" :
+                                    isPremium ? "bg-amber-50 border-amber-200 text-amber-900 hover:bg-amber-100 hover:border-amber-300" :
+                                      price > 0 ? "bg-indigo-50 border-indigo-100 text-indigo-900 hover:bg-indigo-100 hover:border-indigo-300" :
+                                        "bg-white border-slate-200 text-slate-400 hover:bg-slate-50 hover:border-slate-300"
+                              )}
+                            >
+                              <span className="text-[10px] font-bold">{col}</span>
+                              {/* Tooltip Price */}
+                              {!isOccupied && !isSelected && (
+                                <span className="absolute -top-8 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none">
+                                  {price === 0 ? 'Free' : `₹${price}`}
+                                </span>
+                              )}
+                            </button>
+                          )
+                        })}
+                      </React.Fragment>
+                    ))}
                   </div>
 
-                  <div className="flex justify-center gap-8">
-                    {/* Left Side (A, B, C) */}
-                    <div className="grid grid-cols-3 gap-2">
-                      {Array.from({ length: SEAT_ROWS }).map((_, row) => (
-                        <React.Fragment key={`left-${row}`}>
-                          {['A', 'B', 'C'].map(col => {
-                            const seatId = `${row + 1}${col}`;
-                            const price = getSeatPrice(row + 1, col);
-                            const isSelected = selectedSeat === seatId;
-                            const isPremium = row < 3;
+                  {/* Aisle - Row Numbers */}
+                  <div className="flex flex-col gap-3 items-center pt-1 text-xs font-mono text-slate-300">
+                    {Array.from({ length: SEAT_ROWS }).map((_, i) => (
+                      <div key={i} className="h-10 flex items-center">{i + 1}</div>
+                    ))}
+                  </div>
 
-                            return (
-                              <button
-                                key={seatId}
-                                onClick={() => setSelectedSeat(seatId)}
-                                className={`w-8 h-10 rounded-t-lg border-t border-x border-b-4 transition-all flex items-center justify-center text-[10px] font-medium
-                                  ${isSelected
-                                    ? 'bg-green-500 border-green-600 text-white border-b-green-700'
-                                    : isPremium
-                                      ? 'bg-purple-50 border-purple-200 text-purple-700 border-b-purple-300 hover:bg-purple-100'
-                                      : price > 0
-                                        ? 'bg-blue-50 border-blue-200 text-blue-700 border-b-blue-300 hover:bg-blue-100'
-                                        : 'bg-white border-gray-300 text-gray-500 border-b-gray-400 hover:bg-gray-50'
-                                  }`}
-                              >
-                                {seatId}
-                              </button>
-                            )
-                          })}
-                        </React.Fragment>
-                      ))}
-                    </div>
+                  {/* Right Block */}
+                  <div className="grid grid-cols-3 gap-3">
+                    {Array.from({ length: SEAT_ROWS }).map((_, row) => (
+                      <React.Fragment key={`right-${row}`}>
+                        {['D', 'E', 'F'].map(col => {
+                          const seatId = `${row + 1}${col}`;
+                          const price = getSeatPrice(row + 1, col);
+                          const isSelected = selectedSeat === seatId;
+                          const isPremium = row < 3;
+                          const isOccupied = row === 6 && col === 'E'; // Mock occupied
 
-                    {/* Aisle */}
-                    <div className="w-4 flex items-center justify-center text-xs text-gray-300 font-mono tracking-widest vertical-rl">
-                      AISLE
-                    </div>
-
-                    {/* Right Side (D, E, F) */}
-                    <div className="grid grid-cols-3 gap-2">
-                      {Array.from({ length: SEAT_ROWS }).map((_, row) => (
-                        <React.Fragment key={`right-${row}`}>
-                          {['D', 'E', 'F'].map(col => {
-                            const seatId = `${row + 1}${col}`;
-                            const price = getSeatPrice(row + 1, col);
-                            const isSelected = selectedSeat === seatId;
-                            const isPremium = row < 3;
-
-                            return (
-                              <button
-                                key={seatId}
-                                onClick={() => setSelectedSeat(seatId)}
-                                className={`w-8 h-10 rounded-t-lg border-t border-x border-b-4 transition-all flex items-center justify-center text-[10px] font-medium
-                                  ${isSelected
-                                    ? 'bg-green-500 border-green-600 text-white border-b-green-700'
-                                    : isPremium
-                                      ? 'bg-purple-50 border-purple-200 text-purple-700 border-b-purple-300 hover:bg-purple-100'
-                                      : price > 0
-                                        ? 'bg-blue-50 border-blue-200 text-blue-700 border-b-blue-300 hover:bg-blue-100'
-                                        : 'bg-white border-gray-300 text-gray-500 border-b-gray-400 hover:bg-gray-50'
-                                  }`}
-                              >
-                                {seatId}
-                              </button>
-                            )
-                          })}
-                        </React.Fragment>
-                      ))}
-                    </div>
+                          return (
+                            <button
+                              key={seatId}
+                              disabled={isOccupied}
+                              onClick={() => setSelectedSeat(seatId)}
+                              className={cn(
+                                "w-10 h-10 rounded-lg border transition-all flex flex-col items-center justify-center relative group",
+                                isOccupied ? "bg-slate-100 border-slate-200 cursor-not-allowed opacity-50" :
+                                  isSelected ? "bg-emerald-500 border-emerald-600 text-white shadow-lg ring-2 ring-emerald-200 z-10" :
+                                    isPremium ? "bg-amber-50 border-amber-200 text-amber-900 hover:bg-amber-100 hover:border-amber-300" :
+                                      price > 0 ? "bg-indigo-50 border-indigo-100 text-indigo-900 hover:bg-indigo-100 hover:border-indigo-300" :
+                                        "bg-white border-slate-200 text-slate-400 hover:bg-slate-50 hover:border-slate-300"
+                              )}
+                            >
+                              <span className="text-[10px] font-bold">{col}</span>
+                              {/* Tooltip Price */}
+                              {!isOccupied && !isSelected && (
+                                <span className="absolute -top-8 bg-slate-800 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20 pointer-events-none">
+                                  {price === 0 ? 'Free' : `₹${price}`}
+                                </span>
+                              )}
+                            </button>
+                          )
+                        })}
+                      </React.Fragment>
+                    ))}
                   </div>
                 </div>
               </div>
             </div>
           )}
+
+          {/* STEP 3: REVIEW */}
+          {step === 3 && (
+            <div className="p-8 max-w-2xl mx-auto">
+              <div className="bg-white border rounded-2xl shadow-sm overflow-hidden mb-6">
+                <div className="bg-slate-900 text-white p-6 flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-white/10 p-2 rounded-lg"><Plane className="w-6 h-6" /></div>
+                    <div>
+                      <div className="text-sm opacity-80">Flight Summary</div>
+                      <div className="font-bold text-lg">{originCity} <span className="opacity-50">→</span> {destinationCity}</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs opacity-70">Travel Date</div>
+                    <div className="font-medium">{new Date(travelDate).toLocaleDateString()}</div>
+                  </div>
+                </div>
+
+                <div className="p-6 space-y-4">
+                  <div className="flex justify-between items-center py-2 border-b border-dashed">
+                    <span className="text-slate-500">Base Fare ({selectedOption?.name})</span>
+                    <span className="font-medium text-slate-900">₹{(basePrice + (selectedOption?.priceOffset || 0)).toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-dashed">
+                    <span className="text-slate-500">Seat Selection ({selectedSeat})</span>
+                    <span className="font-medium text-slate-900">₹{seatPrice.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-lg font-bold text-slate-900">Total</span>
+                    <span className="text-2xl font-bold text-emerald-600">₹{totalPrice.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-orange-50 border border-orange-100 p-4 rounded-xl flex gap-3 text-orange-800 text-sm mb-6">
+                <AlertCircle className="w-5 h-5 shrink-0" />
+                <p>Please review your booking details accurately. Names must match government ID.</p>
+              </div>
+            </div>
+          )}
+
         </div>
 
-        {/* Footer */}
-        <div className="p-4 border-t bg-white flex items-center justify-between shrink-0">
-          <div className="text-sm text-gray-500">
-            {step === 2 && selectedSeat && (
-              <span>Selected Seat: <strong className="text-gray-900">{selectedSeat}</strong> (+₹{seatPrice})</span>
-            )}
+        {/* Sticky Bottom Footer */}
+        <div className="bg-white border-t p-6 shadow-t-xl z-20">
+          <div className="max-w-5xl mx-auto flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="text-xs text-slate-400 font-medium uppercase tracking-wide">Total to pay</span>
+              <span className="text-3xl font-black text-slate-900">₹{totalPrice.toLocaleString()}</span>
+            </div>
+
+            <button
+              onClick={() => step === 3 ? handleBook() : setStep(step + 1)}
+              disabled={(step === 2 && !selectedSeat) || isBooking}
+              className={cn(
+                "flex items-center gap-2 px-10 py-4 rounded-xl font-bold text-lg transition-all transform active:scale-95 shadow-lg shadow-indigo-200",
+                isBooking ? "bg-slate-100 text-slate-400 cursor-not-allowed" :
+                  "bg-slate-900 text-white hover:bg-slate-800 hover:translate-y-[-2px]"
+              )}
+            >
+              {isBooking ? (
+                <>Processing...</>
+              ) : step === 3 ? (
+                <>Confirm & Pay <CreditCard className="w-5 h-5 ml-1" /></>
+              ) : (
+                <>Continue <ChevronRight className="w-5 h-5" /></>
+              )}
+            </button>
           </div>
-          <button
-            onClick={() => step === 2 ? handleBook() : setStep(step + 1)}
-            disabled={step === 2 && !selectedSeat}
-            className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-3 rounded-lg font-bold text-lg transition-colors shadow-lg shadow-orange-500/20"
-          >
-            {step === 2 ? 'Continue to Passenger' : 'Continue'}
-          </button>
         </div>
+
       </DialogContent>
+
+      <PaymentGateway
+        open={showPayment}
+        onOpenChange={setShowPayment}
+        amount={totalPrice}
+        onSuccess={onPaymentSuccess}
+      />
     </Dialog>
   )
 }

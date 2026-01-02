@@ -49,15 +49,22 @@ const AIRLINE_COLORS: Record<string, string> = {
   'IX': 'bg-red-500',
 };
 
-export default function FlightResultsClient() {
+type Props = {
+  initialOrigin?: string
+  initialDestination?: string
+  initialDate?: string
+}
+
+export default function FlightResultsClient({ initialOrigin, initialDestination, initialDate }: Props) {
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null)
   const [flights, setFlights] = useState<Flight[]>([])
   const [loading, setLoading] = useState(true)
-  const [from, setFrom] = useState('New Delhi')
-  const [to, setTo] = useState('Bengaluru')
-  const [date, setDate] = useState('2025-12-12')
+  const [from, setFrom] = useState(initialOrigin || 'New Delhi')
+  const [to, setTo] = useState(initialDestination || 'Bengaluru')
+  const [date, setDate] = useState(initialDate || '2025-12-12')
   const [searchOpen, setSearchOpen] = useState(false)
+
 
   const fetchFlights = async (origin: string, destination: string, date: string) => {
     setLoading(true);
@@ -105,8 +112,13 @@ export default function FlightResultsClient() {
   };
 
   useEffect(() => {
-    fetchFlights('DEL', 'BOM', '2025-12-12');
-  }, []);
+    // Determine codes - simple heuristic or mapping for demo
+    const normalize = (str: string) => str.toLowerCase().trim();
+    const originCode = CITY_CODES[normalize(from)] || from.toUpperCase().substring(0, 3);
+    const destCode = CITY_CODES[normalize(to)] || to.toUpperCase().substring(0, 3);
+
+    fetchFlights(originCode, destCode, date);
+  }, [from, to, date]);
 
   const handleSearch = (nf: string, nt: string, nd: string) => {
     setFrom(nf);

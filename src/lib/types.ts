@@ -43,6 +43,8 @@ export type User = {
   id: string;
   name: string;
   email: string;
+  phone?: string;
+  avatarUrl?: string; // Custom avatar URL
   // In a real app, you would not store passwords in plaintext.
   // This is for demonstration purposes only.
   password?: string;
@@ -53,8 +55,8 @@ export type User = {
 export type NewUser = Omit<User, 'id' | 'createdAt'>;
 
 export type HotelDocument = {
-    name: string;
-    url: string;
+  name: string;
+  url: string;
 }
 
 export type Hotel = {
@@ -75,15 +77,16 @@ export type Hotel = {
   ownerId: string;
   status: 'pending' | 'approved' | 'rejected';
   coverImage: string;
-  category?: 'Premium' | 'Eco-Friendly' | 'Ski Resort' | 'Historic' | 'Boutique';
+  category?: 'Premium' | 'Eco-Friendly' | 'Ski Resort' | 'Historic' | 'Boutique' | 'Resort' | 'Cabin';
   createdAt: Date;
   ownerName?: string; // For admin view
   ownerEmail?: string; // For admin view
   'data-ai-hint'?: string;
+  videoUrl?: string;
 };
 
-export type NewHotel = Omit<Hotel, 'id' | 'status' | 'createdAt'> & {
-    coverImage?: string;
+export type NewHotel = Omit<Hotel, 'id' | 'status' | 'createdAt' | 'coverImage'> & {
+  coverImage?: string;
 };
 
 export type HotelSearchCriteria = {
@@ -110,14 +113,14 @@ export type Room = {
 };
 
 export type NewRoom = Omit<Room, 'id' | 'createdAt' | 'hotelName' | 'data-ai-hint'> & {
-    images: string[];
+  images: string[];
 };
 
 export type Booking = {
   id: string;
   userId: string;
   roomId: string;
-  hotelId:string;
+  hotelId: string;
   fromDate: Date | Timestamp;
   toDate: Date | Timestamp;
   totalPrice: number;
@@ -135,15 +138,15 @@ export type Booking = {
 export type NewBooking = Omit<Booking, 'id' | 'createdAt' | 'status'>
 
 export type Review = {
-    id: string;
-    userId: string;
-    userName: string;
-    userAvatar: string;
-    userCountry: string; // Added for UI consistency
-    hotelId: string;
-    rating: number;
-    comment: string;
-    createdAt: Date | Timestamp;
+  id: string;
+  userId: string;
+  userName: string;
+  userAvatar: string;
+  userCountry: string; // Added for UI consistency
+  hotelId: string;
+  rating: number;
+  comment: string;
+  createdAt: Date | Timestamp;
 }
 
 export type NewReview = Omit<Review, 'id' | 'createdAt'>;

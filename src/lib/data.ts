@@ -113,6 +113,7 @@ export const createUser = async (userData: NewUser, uid?: string): Promise<User>
 };
 
 export const getUserById = async (id: string): Promise<User | undefined> => {
+    if (!id) return undefined;
     try {
         const userDoc = await getDoc(doc(usersCol, id));
         return fromFirestore<User>(userDoc);
@@ -125,6 +126,12 @@ export const getUserById = async (id: string): Promise<User | undefined> => {
 export const getAllUsers = async (): Promise<User[]> => {
     const snapshot = await getDocs(usersCol);
     return snapshot.docs.map(doc => fromFirestore<User>(doc)).filter(Boolean) as User[];
+};
+
+export const updateUser = async (userId: string, data: Partial<User>): Promise<void> => {
+    if (!userId) throw new Error("User ID is required");
+    const userRef = doc(usersCol, userId);
+    await updateDoc(userRef, data);
 };
 
 
@@ -164,6 +171,7 @@ export const searchHotels = async (criteria: HotelSearchCriteria): Promise<Hotel
 };
 
 export const getHotelById = async (id: string): Promise<Hotel | undefined> => {
+    if (!id) return undefined;
     const hotelDoc = await getDoc(doc(hotelsCol, id));
     return fromFirestore<Hotel>(hotelDoc);
 };
@@ -181,11 +189,13 @@ export const getAllApprovedRooms = async (): Promise<Room[]> => {
 };
 
 export const getRoomById = async (id: string): Promise<Room | undefined> => {
+    if (!id) return undefined;
     const roomDoc = await getDoc(doc(roomsCol, id));
     return fromFirestore<Room>(roomDoc);
 };
 
 export const updateHotelStatus = async (id: string, status: 'approved' | 'rejected'): Promise<void> => {
+    if (!id) throw new Error("Hotel ID is required");
     const hotelRef = doc(hotelsCol, id);
     await updateDoc(hotelRef, { status });
 }
@@ -209,6 +219,7 @@ export const createHotel = async (hotelData: NewHotel): Promise<Hotel> => {
 }
 
 export const deleteHotel = async (id: string): Promise<void> => {
+    if (!id) throw new Error("Hotel ID is required");
     // Delete associated rooms first
     const roomsSnapshot = await getDocs(query(roomsCol, where('hotelId', '==', id)));
     const deleteRoomPromises = roomsSnapshot.docs.map(doc => deleteDoc(doc.ref));
@@ -220,6 +231,7 @@ export const deleteHotel = async (id: string): Promise<void> => {
 }
 
 export const updateRoomStatus = async (id: string, status: 'approved' | 'rejected'): Promise<void> => {
+    if (!id) throw new Error("Room ID is required");
     const roomRef = doc(roomsCol, id);
     await updateDoc(roomRef, { status });
 }
@@ -373,6 +385,12 @@ export const getBookingsByOwner = async (ownerId: string): Promise<Booking[]> =>
     return snapshot.docs.map(doc => fromFirestore<Booking>(doc)).filter(Boolean) as Booking[];
 }
 
+export const getBookingById = async (id: string): Promise<Booking | undefined> => {
+    if (!id) return undefined;
+    const bookingDoc = await getDoc(doc(bookingsCol, id));
+    return fromFirestore<Booking>(bookingDoc);
+};
+
 export const cancelBooking = async (bookingId: string): Promise<void> => {
     const bookingRef = doc(bookingsCol, bookingId);
     const bookingDoc = await getDoc(bookingRef);
@@ -463,11 +481,13 @@ export async function createBus(busData: any) {
 }
 
 export const deleteBus = async (id: string): Promise<void> => {
+    if (!id) return;
     const busRef = doc(busesCol, id);
     await deleteDoc(busRef);
 }
 
 export const updateBus = async (id: string, busData: any): Promise<void> => {
+    if (!id) return;
     const busRef = doc(busesCol, id);
     // Remove seats from update if not intended to be reset, or handle carefully.
     // For now, we'll assume basic details update.

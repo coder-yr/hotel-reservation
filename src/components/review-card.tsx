@@ -27,7 +27,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
     const { user } = useAuth();
     const { toast } = useToast();
     const [isExpanded, setIsExpanded] = useState(false);
-    
+
     const isLongText = review.comment.length > MAX_TEXT_LENGTH;
     const canDelete = user && user.id === review.userId;
 
@@ -42,8 +42,8 @@ export function ReviewCard({ review }: ReviewCardProps) {
         }
     }
 
-    const displayText = isLongText && !isExpanded 
-        ? `${review.comment.substring(0, MAX_TEXT_LENGTH)}...` 
+    const displayText = isLongText && !isExpanded
+        ? `${review.comment.substring(0, MAX_TEXT_LENGTH)}...`
         : review.comment;
 
     return (
@@ -87,7 +87,20 @@ export function ReviewCard({ review }: ReviewCardProps) {
                         <Star key={i} className={`h-4 w-4 ${i < review.rating ? 'text-primary fill-primary' : 'text-muted-foreground/50'}`} />
                     ))}
                 </div>
-                <p className="text-sm font-semibold">{format(review.createdAt as Date, 'LLLL yyyy')}</p>
+                <p className="text-sm font-semibold">
+                    {(() => {
+                        try {
+                            const date = review.createdAt instanceof Date
+                                ? review.createdAt
+                                : (review.createdAt as any)?.toDate
+                                    ? (review.createdAt as any).toDate()
+                                    : new Date(review.createdAt);
+                            return isNaN(date.getTime()) ? 'Recently' : format(date, 'LLLL yyyy');
+                        } catch (e) {
+                            return 'Recently';
+                        }
+                    })()}
+                </p>
             </div>
             <p className="text-muted-foreground leading-relaxed">
                 {displayText}
@@ -97,7 +110,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
                     </Button>
                 )}
             </p>
-            
+
             {/* This part for review images is currently disabled as we are not collecting images yet */}
             {/* {review.images && review.images.length > 0 && ( ... )} */}
         </div>

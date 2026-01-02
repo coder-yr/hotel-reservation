@@ -13,13 +13,23 @@ import { cn } from '@/lib/utils';
 
 type SearchType = 'hotel' | 'flight' | 'bus';
 
-export function SearchForm() {
+interface SearchFormProps {
+    defaultTab?: SearchType;
+    initialValues?: {
+        destination?: string;
+        origin?: string;
+        dates?: DateRange;
+        guests?: { adults: number; children: number; infants: number };
+    }
+}
+
+export function SearchForm({ defaultTab = 'hotel', initialValues }: SearchFormProps) {
     const router = useRouter();
-    const [activeTab, setActiveTab] = useState<SearchType>('hotel');
-    const [destination, setDestination] = useState('');
-    const [origin, setOrigin] = useState(''); // New for Flights/Bus
-    const [dateRange, setDateRange] = useState<DateRange | undefined>();
-    const [guests, setGuests] = useState({
+    const [activeTab, setActiveTab] = useState<SearchType>(defaultTab);
+    const [destination, setDestination] = useState(initialValues?.destination || '');
+    const [origin, setOrigin] = useState(initialValues?.origin || ''); // New for Flights/Bus
+    const [dateRange, setDateRange] = useState<DateRange | undefined>(initialValues?.dates);
+    const [guests, setGuests] = useState(initialValues?.guests || {
         adults: 1,
         children: 0,
         infants: 0
@@ -54,8 +64,8 @@ export function SearchForm() {
 
         // Route mapping
         const routes = {
-            hotel: '/search',
-            flight: '/flights/search',
+            hotel: '/hotels',
+            flight: '/flights/results',
             bus: '/bus/search'
         };
 

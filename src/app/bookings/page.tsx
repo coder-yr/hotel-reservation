@@ -1,7 +1,7 @@
 
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { UserBookings } from "@/components/user-bookings";
+import { BookingsDashboard } from "@/components/bookings/bookings-dashboard";
 import { BookMarked } from "lucide-react";
 
 export default function BookingsPage() {
@@ -24,8 +24,8 @@ export default function BookingsPage() {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-10">
-          <UserBookings />
+        <div className="container mx-auto px-4 py-8 mb-20 min-h-[60vh]">
+          <BookingsDashboard />
         </div>
       </main>
       <Footer />

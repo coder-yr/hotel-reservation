@@ -101,19 +101,19 @@ const sampleFlightsData = [
 ];
 
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, query, getDocs, addDoc, serverTimestamp, writeBatch, doc } from 'firebase/firestore';
+import { getFirestore, collection, query, getDocs, addDoc, serverTimestamp, writeBatch, doc, where } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import type { NewHotel, NewUser, NewRoom, NewReview, Hotel } from './types';
 
 
 export const firebaseConfig = {
-    "projectId": "lodgify-lite-xhtha",
-    "appId": "1:720826776932:web:cc195257ff975f49788e71",
-    "storageBucket": "lodgify-lite-xhtha.firebasestorage.app",
-    "apiKey": "AIzaSyADLyfG_gE4mtrE04Sm2Zpx5Nld1fMRG8Y",
-    "authDomain": "lodgify-lite-xhtha.firebaseapp.com",
-    "measurementId": "",
-    "messagingSenderId": "720826776932"
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+    measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
@@ -204,6 +204,144 @@ const sampleHotelsData: Omit<NewHotel, 'ownerId' | 'ownerName' | 'ownerEmail' | 
         coverImage: 'https://images.pexels.com/photos/208333/pexels-photo-208333.jpeg',
         category: 'Boutique',
         'data-ai-hint': 'ski lodge'
+    },
+    // New Trending Destinations
+    {
+        name: 'Goa Beach Resort',
+        location: 'Goa, India',
+        description: 'Experience the vibrant spirit of Goa with direct beach access and sunset parties.',
+        address: "Calangute Beach Rd, Goa, India",
+        phone: "555-GOA-1234",
+        email: "bookings@goabeachresort.com",
+        facilities: ["wifi", "pool", "restaurant", "bar", "beach access"],
+        checkInTime: "14:00",
+        checkOutTime: "11:00",
+        cancellationPolicy: "Free cancellation up to 48 hours before check-in.",
+        isPetFriendly: false,
+        documents: [],
+        coverImage: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&auto=format&fit=crop&q=60',
+        category: 'Resort',
+        'data-ai-hint': 'beach resort goa'
+    },
+    {
+        name: 'Mumbai Skyline Hotel',
+        location: 'Mumbai, India',
+        description: 'Luxury living in the heart of Mumbai, overlooking the Marine Drive.',
+        address: "Marine Drive, Mumbai, India",
+        phone: "555-BOM-5678",
+        email: "reservations@mumbaiskyline.com",
+        facilities: ["wifi", "gym", "spa", "rooftop bar"],
+        checkInTime: "14:00",
+        checkOutTime: "12:00",
+        cancellationPolicy: "Non-refundable booking.",
+        isPetFriendly: false,
+        documents: [],
+        coverImage: 'https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=800&auto=format&fit=crop&q=60',
+        category: 'Premium',
+        'data-ai-hint': 'luxury hotel mumbai'
+    },
+    {
+        name: 'Jaipur Royal Palace',
+        location: 'Jaipur, India',
+        description: 'Stay like royalty in this heritage palace hotel showcasing Rajasthani architecture.',
+        address: "Amber Fort Rd, Jaipur, India",
+        phone: "555-JAI-9012",
+        email: "heritage@jaipurroyal.com",
+        facilities: ["wifi", "pool", "restaurant", "cultural shows"],
+        checkInTime: "12:00",
+        checkOutTime: "10:00",
+        cancellationPolicy: "Dynamic cancellation policy.",
+        isPetFriendly: true,
+        documents: [],
+        coverImage: 'https://images.unsplash.com/photo-1477587458883-47145ed94245?w=800&auto=format&fit=crop&q=60',
+        category: 'Historic',
+        'data-ai-hint': 'palace hotel jaipur'
+    },
+    // More Trending Destinations
+    {
+        name: 'The Leela Palace',
+        location: 'New Delhi, India',
+        description: 'An architectural marvel offering royal Indian luxury in the capital city.',
+        address: "Diplomatic Enclave, Chanakyapuri, New Delhi",
+        phone: "555-DEL-1234",
+        email: "reservations@leelapalace.com",
+        facilities: ["wifi", "pool", "spa", "fine dining"],
+        checkInTime: "14:00",
+        checkOutTime: "12:00",
+        cancellationPolicy: "Free cancellation up to 24 hours before check-in.",
+        isPetFriendly: false,
+        documents: [],
+        coverImage: 'https://images.unsplash.com/photo-1590447158019-866d6d3131ca?w=800&auto=format&fit=crop&q=60',
+        category: 'Premium',
+        'data-ai-hint': 'luxury hotel delhi'
+    },
+    {
+        name: 'Baga Beach Cottages',
+        location: 'Goa, India',
+        description: 'Charming wooden cottages right on the sands of Baga Beach.',
+        address: "Baga Beach, North Goa, India",
+        phone: "555-GOA-5678",
+        email: "stay@bagacottages.com",
+        facilities: ["wifi", "beach access", "bar"],
+        checkInTime: "13:00",
+        checkOutTime: "11:00",
+        cancellationPolicy: "Non-refundable during peak season.",
+        isPetFriendly: true,
+        documents: [],
+        coverImage: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&auto=format&fit=crop&q=60',
+        category: 'Cabin',
+        'data-ai-hint': 'beach cottage goa'
+    },
+    {
+        name: 'Mumbai Ocean Front',
+        location: 'Mumbai, India',
+        description: 'Stay close to the action with stunning sea link views.',
+        address: "Bandra West, Mumbai, India",
+        phone: "555-BOM-9012",
+        email: "info@mumbaiocean.com",
+        facilities: ["wifi", "gym", "rooftop cafe"],
+        checkInTime: "14:00",
+        checkOutTime: "12:00",
+        cancellationPolicy: "Flexible cancellation.",
+        isPetFriendly: true,
+        documents: [],
+        coverImage: 'https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=800&auto=format&fit=crop&q=60',
+        category: 'Boutique',
+        'data-ai-hint': 'sea view hotel mumbai'
+    },
+    {
+        name: 'Pink City Heritage',
+        location: 'Jaipur, India',
+        description: 'A converted havelli in the heart of the walled city.',
+        address: "Johari Bazar, Jaipur, India",
+        phone: "555-JAI-3456",
+        email: "stay@pinkcityheritage.com",
+        facilities: ["wifi", "restaurant", "courtyard"],
+        checkInTime: "12:00",
+        checkOutTime: "10:00",
+        cancellationPolicy: "Free cancellation up to 48 hours.",
+        isPetFriendly: false,
+        documents: [],
+        coverImage: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800&auto=format&fit=crop&q=60',
+        category: 'Historic',
+        'data-ai-hint': 'heritage havelli jaipur'
+    },
+    {
+        name: 'Himalayan Heights',
+        location: 'Manali, India',
+        description: 'Perched high in the mountains, offering panoramic snow views.',
+        address: "Solang Valley, Manali, India",
+        phone: "555-HIM-7890",
+        email: "bookings@himalayanheights.com",
+        facilities: ["wifi", "heating", "bonfire"],
+        checkInTime: "12:00",
+        checkOutTime: "11:00",
+        cancellationPolicy: "Free cancellation within 24 hours.",
+        isPetFriendly: true,
+        documents: [],
+        coverImage: 'https://images.unsplash.com/photo-1519985176271-adb10462dcd1?w=800&auto=format&fit=crop&q=60',
+        category: 'Ski Resort',
+        'data-ai-hint': 'mountain resort manali'
     }
 ];
 
@@ -252,6 +390,85 @@ const sampleRoomsData: Omit<NewRoom, 'hotelId' | 'createdAt' | 'status'>[] = [
         price: 220,
         capacity: 2,
         images: ['https://images.pexels.com/photos/271619/pexels-photo-271619.jpeg', 'https://images.pexels.com/photos/6782476/pexels-photo-6782476.jpeg'],
+    },
+    // For Goa Beach Resort
+    {
+        title: 'Ocean View Cottage',
+        description: 'Steps away from the beach, listen to the waves from your private cottage.',
+        price: 3500,
+        capacity: 2,
+        images: ['https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&auto=format&fit=crop&q=60'],
+    },
+    {
+        title: 'Poolside Villa',
+        description: 'Luxury villa with direct pool access.',
+        price: 5500,
+        capacity: 4,
+        images: ['https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=800&auto=format&fit=crop&q=60'],
+    },
+    // For Mumbai Skyline Hotel
+    {
+        title: 'Luxury Sea Face',
+        description: 'Panoramic views of the Arabian sea.',
+        price: 8500,
+        capacity: 2,
+        images: ['https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=60'],
+    },
+    // For Jaipur Royal Palace
+    {
+        title: 'Maharaja Suite',
+        description: 'Opulent decor inspired by royal heritage.',
+        price: 12000,
+        capacity: 2,
+        images: ['https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&auto=format&fit=crop&q=60'],
+    },
+    // For Manali Pine Retreat
+    {
+        title: 'Snow View Cabin',
+        description: 'Cozy wood-paneled cabin with mountain views.',
+        price: 4000,
+        capacity: 3,
+        images: ['https://images.unsplash.com/photo-1587061949409-02df41d5e562?w=800&auto=format&fit=crop&q=60'],
+    },
+    // New Delhi
+    {
+        title: 'Royal Club Room',
+        description: 'Luxury room with club lounge access.',
+        price: 15000,
+        capacity: 2,
+        images: ['https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&auto=format&fit=crop&q=60'],
+    },
+    // Goa Baga
+    {
+        title: 'Beachside Hut',
+        description: 'Rustic hut with modern amenities.',
+        price: 3000,
+        capacity: 2,
+        images: ['https://images.unsplash.com/photo-1516455207990-7a41ce80f7ee?w=800&auto=format&fit=crop&q=60'],
+    },
+    // Mumbai Ocean
+    {
+        title: 'Sea View Suite',
+        description: 'Wake up to the sound of the ocean.',
+        price: 7000,
+        capacity: 2,
+        images: ['https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800&auto=format&fit=crop&q=60'],
+    },
+    // Jaipur Heritage
+    {
+        title: 'Heritage Room',
+        description: 'Traditional decor with antique furniture.',
+        price: 5000,
+        capacity: 2,
+        images: ['https://images.unsplash.com/photo-1590059390492-d5495eb8305f?w=800&auto=format&fit=crop&q=60'],
+    },
+    // Manali Heights
+    {
+        title: 'Mountain View Suite',
+        description: 'Panoramic views of snow peaks.',
+        price: 6000,
+        capacity: 3,
+        images: ['https://images.unsplash.com/photo-1542718610-a1d656d77143?w=800&auto=format&fit=crop&q=60'],
     }
 ];
 
@@ -368,7 +585,17 @@ const seedDatabase = async () => {
             });
         }
         if (charlieOwner) {
+            // Seed existing samples
             sampleHotelsData.slice(3, 4).forEach(hotel => {
+                hotelsToSeed.push({
+                    ...hotel,
+                    ownerId: charlieOwner.id,
+                    ownerName: charlieOwner.name,
+                    ownerEmail: charlieOwner.email
+                });
+            });
+            // Seed new trending hotels to Charlie as well
+            sampleHotelsData.slice(4).forEach(hotel => {
                 hotelsToSeed.push({
                     ...hotel,
                     ownerId: charlieOwner.id,
@@ -380,6 +607,21 @@ const seedDatabase = async () => {
 
         if (hotelsToSeed.length > 0) {
             await seedCollection('hotels', hotelsToSeed, 'name');
+        }
+
+        // --- FORCE UPDATE STATUS for all sample hotels ---
+        // This ensures that even if they existed before (as pending), they get approved now.
+        const namesToApprove = sampleHotelsData.map(h => h.name);
+        if (namesToApprove.length > 0) {
+            console.log("Ensuring all sample hotels are approved...");
+            const hotelsToUpdateQuery = query(collection(db, 'hotels'), where('name', 'in', namesToApprove));
+            const hotelsToUpdateSnapshot = await getDocs(hotelsToUpdateQuery);
+            const updateBatch = writeBatch(db);
+            hotelsToUpdateSnapshot.docs.forEach(doc => {
+                updateBatch.update(doc.ref, { status: 'approved' });
+            });
+            await updateBatch.commit();
+            console.log(`Updated status to 'approved' for ${hotelsToUpdateSnapshot.size} hotels.`);
         }
 
         const allHotelsSnapshot = await getDocs(collection(db, 'hotels'));
@@ -401,6 +643,48 @@ const seedDatabase = async () => {
         if (modernHub) {
             roomsToSeed.push({ ...sampleRoomsData[4], hotelId: modernHub.id, status: 'approved' });
             roomsToSeed.push({ ...sampleRoomsData[5], hotelId: modernHub.id, status: 'approved' });
+        }
+
+        // Seed rooms for new hotels
+        const goaResort = allHotels.find(h => h.name === 'Goa Beach Resort');
+        const mumbaiHotel = allHotels.find(h => h.name === 'Mumbai Skyline Hotel');
+        const jaipurPalace = allHotels.find(h => h.name === 'Jaipur Royal Palace');
+        const manaliRetreat = allHotels.find(h => h.name === 'Manali Pine Retreat');
+
+        if (goaResort) {
+            roomsToSeed.push({ ...sampleRoomsData[6], hotelId: goaResort.id, status: 'approved' });
+            roomsToSeed.push({ ...sampleRoomsData[7], hotelId: goaResort.id, status: 'approved' });
+        }
+        if (mumbaiHotel) {
+            roomsToSeed.push({ ...sampleRoomsData[8], hotelId: mumbaiHotel.id, status: 'approved' });
+        }
+        if (jaipurPalace) {
+            roomsToSeed.push({ ...sampleRoomsData[9], hotelId: jaipurPalace.id, status: 'approved' });
+        }
+        if (manaliRetreat) {
+            roomsToSeed.push({ ...sampleRoomsData[10], hotelId: manaliRetreat.id, status: 'approved' });
+        }
+
+        const delhiLeela = allHotels.find(h => h.name === 'The Leela Palace');
+        const goaBaga = allHotels.find(h => h.name === 'Baga Beach Cottages');
+        const mumbaiOcean = allHotels.find(h => h.name === 'Mumbai Ocean Front');
+        const jaipurHeritage = allHotels.find(h => h.name === 'Pink City Heritage');
+        const manaliHeights = allHotels.find(h => h.name === 'Himalayan Heights');
+
+        if (delhiLeela) {
+            roomsToSeed.push({ ...sampleRoomsData[11], hotelId: delhiLeela.id, status: 'approved' });
+        }
+        if (goaBaga) {
+            roomsToSeed.push({ ...sampleRoomsData[12], hotelId: goaBaga.id, status: 'approved' });
+        }
+        if (mumbaiOcean) {
+            roomsToSeed.push({ ...sampleRoomsData[13], hotelId: mumbaiOcean.id, status: 'approved' });
+        }
+        if (jaipurHeritage) {
+            roomsToSeed.push({ ...sampleRoomsData[14], hotelId: jaipurHeritage.id, status: 'approved' });
+        }
+        if (manaliHeights) {
+            roomsToSeed.push({ ...sampleRoomsData[15], hotelId: manaliHeights.id, status: 'approved' });
         }
 
         if (roomsToSeed.length > 0) {
@@ -441,7 +725,10 @@ const seedDatabase = async () => {
 };
 
 // Immediately invoke the seeding function to ensure data is available on startup
-seedDatabase();
+export { seedDatabase };
+seedDatabase(); // Uncomment this line if you need to run seeding via module import, otherwise call it where appropriate like in an admin page or useEffect.
+// Checking environment to maybe auto-seed in dev? 
+// For now, let's export it and user can trigger it or we trigger it via specific user action.
 
 export async function getApprovedHotels() {
     try {

@@ -9,6 +9,75 @@ import { SearchForm } from '@/components/search-form'; // Use the new multi-tab 
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { Loader2 } from 'lucide-react';
+import BusBookingModal from '@/components/bus-booking-modal';
+
+// Mock Data for Demo
+const MOCK_BUSES: BusCardProps[] = [
+    {
+        id: 'mock-1',
+        operator: 'Zingbus Premium',
+        busType: 'Volvo AC Multi-Axle Sleeper',
+        departureTime: '21:30',
+        arrivalTime: '07:00',
+        duration: '9h 30m',
+        rating: 4.8,
+        reviews: 324,
+        price: 1450,
+        seatsAvailable: 12,
+        amenities: ['wifi', 'water', 'charging', 'blanket'],
+        seats: [],
+        source: 'Mumbai',
+        destination: 'Goa'
+    },
+    {
+        id: 'mock-2',
+        operator: 'VRL Travels',
+        busType: 'Scania AC Seater/Sleeper',
+        departureTime: '22:00',
+        arrivalTime: '08:15',
+        duration: '10h 15m',
+        rating: 4.5,
+        reviews: 856,
+        price: 1100,
+        seatsAvailable: 24,
+        amenities: ['charging', 'reading_light', 'cctv'],
+        seats: [],
+        source: 'Mumbai',
+        destination: 'Goa'
+    },
+    {
+        id: 'mock-3',
+        operator: 'IntrCity SmartBus',
+        busType: 'AC Sleeper (2+1)',
+        departureTime: '19:45',
+        arrivalTime: '05:30',
+        duration: '9h 45m',
+        rating: 4.6,
+        reviews: 120,
+        price: 1650,
+        seatsAvailable: 8,
+        amenities: ['wifi', 'water', 'washroom', 'snacks'],
+        seats: [],
+        source: 'Bangalore',
+        destination: 'Goa'
+    },
+    {
+        id: 'mock-4',
+        operator: 'Orange Travels',
+        busType: 'Bharat Benz AC Sleeper',
+        departureTime: '23:15',
+        arrivalTime: '06:00',
+        duration: '6h 45m',
+        rating: 4.3,
+        reviews: 410,
+        price: 850,
+        seatsAvailable: 15,
+        amenities: ['charging', 'water'],
+        seats: [],
+        source: 'Chennai',
+        destination: 'Bangalore'
+    }
+];
 
 export default function BusSearchResultsPage() {
     const searchParams = useSearchParams();
@@ -23,59 +92,76 @@ export default function BusSearchResultsPage() {
         const fetchAndFilterBuses = async () => {
             setLoading(true);
             try {
-                // Since Firebase filtering on substring is limited, we fetch all and filter client-side for this demo
-                // In a real app with Algolia/Elasticsearch, this would be an API call.
+                // Try fetching from DB
                 const querySnapshot = await getDocs(collection(db, 'buses'));
 
-                const allBuses: BusCardProps[] = querySnapshot.docs.map(doc => {
-                    const data = doc.data();
-                    return {
-                        id: doc.id,
-                        operator: data.operator || 'Unknown Operator',
-                        busType: data.busType || 'AC Sleeper',
-                        departureTime: data.depart || '20:00',
-                        arrivalTime: data.arrive || '06:00',
-                        duration: data.duration || '10h',
-                        rating: typeof data.rating === 'number' ? data.rating : 4.2,
-                        reviews: typeof data.reviews === 'number' ? data.reviews : 50,
-                        price: typeof data.price === 'string' ? parseInt(data.price.replace(/[^\d]/g, '')) : (typeof data.price === 'number' ? data.price : 900),
-                        seatsAvailable: Array.isArray(data.seats) ? data.seats.filter((s: any) => s.status === 'available').length : 20,
-                        amenities: Array.isArray(data.amenities) ? data.amenities : ['wifi', 'water'],
-                        seats: Array.isArray(data.seats) ? data.seats : [],
-                        // Mock source/destination for filtering demonstration if missing in DB
-                        source: data.source || 'Delhi',
-                        destination: data.destination || 'Manali'
-                    };
-                });
+                let allBuses: BusCardProps[] = [];
+
+                if (!querySnapshot.empty) {
+                    allBuses = querySnapshot.docs.map(doc => {
+                        const data = doc.data();
+                        return {
+                            id: doc.id,
+                            operator: data.operator || 'Unknown Operator',
+                            busType: data.busType || 'AC Sleeper',
+                            departureTime: data.depart || '20:00',
+                            arrivalTime: data.arrive || '06:00',
+                            duration: data.duration || '10h',
+                            rating: typeof data.rating === 'number' ? data.rating : 4.2,
+                            reviews: typeof data.reviews === 'number' ? data.reviews : 50,
+                            price: typeof data.price === 'string' ? parseInt(data.price.replace(/[^\d]/g, '')) : (typeof data.price === 'number' ? data.price : 900),
+                            seatsAvailable: Array.isArray(data.seats) ? data.seats.filter((s: any) => s.status === 'available').length : 20,
+                            amenities: Array.isArray(data.amenities) ? data.amenities : ['wifi', 'water'],
+                            seats: Array.isArray(data.seats) ? data.seats : [],
+                            source: data.source || data.origin || 'Mumbai', // Handle variations
+                            destination: data.destination || 'Goa'
+                        };
+                    });
+                } else {
+                    console.log("DB empty, using MOCK_BUSES");
+                    // Mock ID generation to avoid key conflicts
+                    allBuses = MOCK_BUSES.map(b => ({ ...b }));
+                }
 
                 // Client-side Filtering
                 const searchFrom = from.toLowerCase().trim();
                 const searchTo = to.toLowerCase().trim();
 
-                const filtered = allBuses.filter(bus => {
+                let filtered = allBuses.filter(bus => {
                     // If DB doesn't have source/dest, we loosely match or show all if nothing typed
                     if (!from && !to) return true;
 
-                    const busSource = (bus as any).source?.toLowerCase() || '';
-                    const busDest = (bus as any).destination?.toLowerCase() || '';
+                    const busSource = bus.source?.toLowerCase() || '';
+                    const busDest = bus.destination?.toLowerCase() || '';
 
-                    // Loose matching
+                    // Loose matching (substring)
                     const matchFrom = !from || busSource.includes(searchFrom);
                     const matchTo = !to || busDest.includes(searchTo);
 
                     return matchFrom && matchTo;
                 });
 
+                // If strictly filtered list is empty, and we are in demo mode (using mock data or empty DB), 
+                // show ALL mock buses to ensure user sees SOMETHING.
+                if (filtered.length === 0 && (querySnapshot.empty || allBuses.length < 5)) {
+                    console.log("No exact matches, showing all mock buses for demo.");
+                    filtered = MOCK_BUSES; // Fallback to show all mock buses
+                }
+
                 setBuses(filtered);
 
             } catch (error) {
                 console.error('Error fetching buses:', error);
+                setBuses(MOCK_BUSES); // Fallback on error
             } finally {
                 setLoading(false);
             }
         };
         fetchAndFilterBuses();
     }, [from, to, date]);
+
+    const [selectedBus, setSelectedBus] = useState<BusCardProps | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
         <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-background">
@@ -130,13 +216,24 @@ export default function BusSearchResultsPage() {
                             </div>
                         ) : (
                             buses.map((bus, idx) => (
-                                <BusCard key={bus.id || idx} {...bus} />
+                                <BusCard
+                                    key={bus.id || idx}
+                                    {...bus}
+                                    onBook={(b) => { setSelectedBus(b); setIsModalOpen(true); }}
+                                />
                             ))
                         )}
                     </section>
                 </div>
             </main>
             <Footer />
+
+            <BusBookingModal
+                bus={selectedBus}
+                open={isModalOpen}
+                onOpenChangeAction={setIsModalOpen}
+                travelDate={date}
+            />
         </div>
     );
 }

@@ -52,7 +52,7 @@ export function Header() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="rounded-full h-10 w-10 p-0 hover:bg-slate-100 dark:hover:bg-white/10">
                   <Avatar className="h-9 w-9 border-2 border-white dark:border-slate-700 shadow-sm">
-                    <AvatarImage src={`https://i.pravatar.cc/150?u=${user.id}`} alt={user.name} />
+                    <AvatarImage src={user.avatarUrl || `https://i.pravatar.cc/150?u=${user.id}`} alt={user.name} />
                     <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
                   </Avatar>
                 </Button>
@@ -64,7 +64,10 @@ export function Header() {
                   <BookMarked className="mr-2 h-4 w-4" />
                   My Bookings
                 </DropdownMenuItem>
-                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push('/profile')}>
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-red-500 focus:text-red-500">
                   <LogOut className="mr-2 h-4 w-4" />

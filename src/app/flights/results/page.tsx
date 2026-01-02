@@ -1,34 +1,33 @@
+
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import FlightResultsClient from '@/components/flight-results-client'
+import { getAllFlights, getFilteredFlights } from '@/lib/data'
 
-type Flight = {
-  id: string
-  airline: string
-  depart: string
-  arrive: string
-  duration: string
-  price: string
-  stops: string
+type Props = {
+  searchParams: Promise<{
+    origin?: string
+    destination?: string
+    from?: string // Date
+    guests?: string
+  }>
 }
 
-const MOCK_FLIGHTS: Flight[] = [
-  { id: 'f1', airline: 'Air India Express', depart: '10:30 New Delhi', arrive: '20:10 Bengaluru', duration: '09h 40m', price: '₹ 5,672', stops: '1 stop' },
-  { id: 'f2', airline: 'Akasa Air', depart: '22:45 New Delhi', arrive: '01:40 Bengaluru', duration: '02h 55m', price: '₹ 6,828', stops: 'Non stop' },
-  { id: 'f3', airline: 'IndiGo', depart: '14:15 New Delhi', arrive: '16:55 Bengaluru', duration: '02h 40m', price: '₹ 6,849', stops: 'Non stop' },
-  { id: 'f4', airline: 'SpiceJet', depart: '22:00 New Delhi', arrive: '00:50 Bengaluru', duration: '02h 50m', price: '₹ 6,883', stops: 'Non stop' },
-  { id: 'f5', airline: 'Akasa Air', depart: '14:50 New Delhi', arrive: '17:45 Bengaluru', duration: '02h 55m', price: '₹ 7,018', stops: 'Non stop' },
-  { id: 'f5', airline: 'vistara', depart: '1:25 New Delhi', arrive: '17:45 Bengaluru', duration: '03h 00m', price: '₹ 8,000', stops: 'Non stop' },
-]
+export default async function FlightResultsPage({ searchParams }: Props) {
+  const { origin, destination, from: date, guests } = await searchParams
 
-export default function FlightResultsPage() {
+  // We can fetch initial data here server-side if we want, or let the client handling IT.
+  // Given existing client component structure, we'll pass params to it.
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
 
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="hero-gradient rounded p-4 mb-6">
-          <h2 className="text-lg font-semibold text-white">Flights from New Delhi to Bengaluru, and back</h2>
+          <h2 className="text-lg font-semibold text-white">
+            Flights {origin ? `from ${origin}` : ''} {destination ? `to ${destination}` : ''}
+          </h2>
         </div>
 
         <div className="lg:grid lg:grid-cols-12 gap-6">
@@ -45,41 +44,12 @@ export default function FlightResultsPage() {
           </aside>
 
           <section className="lg:col-span-9">
-            <div className="grid grid-cols-1 gap-4">
-              {/* Top summary boxes */}
-                <div className="grid sm:grid-cols-2 gap-4">
-                <div className="border rounded bg-card p-4">
-                  <div className="text-sm text-muted-foreground">New Delhi → Bengaluru Wed, 12 Nov</div>
-                </div>
-                <div className="border rounded bg-card p-4">
-                  <div className="text-sm text-muted-foreground">Bengaluru → New Delhi Fri, 14 Nov</div>
-                </div>
-              </div>
-
-              {/* Highlighted cheapest options */}
-              <div className="grid sm:grid-cols-2 gap-4">
-                {MOCK_FLIGHTS.slice(0,2).map(f => (
-                  <div key={f.id} className="p-4 rounded bg-teal-400 text-white">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="font-semibold">{f.airline}</div>
-                        <div className="text-sm">{f.depart} → {f.arrive}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-xl font-bold">{f.price}</div>
-                        <div className="text-sm">per adult</div>
-                      </div>
-                    </div>
-                    <div className="mt-3">
-                      <button className="bg-white text-teal-600 px-3 py-1 rounded font-semibold">VIEW ALL</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Results list (client) */}
-              <FlightResultsClient />
-            </div>
+            {/* Results list (client) which handles fetching/displaying */}
+            <FlightResultsClient
+              initialOrigin={origin}
+              initialDestination={destination}
+              initialDate={date}
+            />
           </section>
         </div>
       </main>

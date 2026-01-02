@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -10,9 +9,10 @@ import {
 } from "react";
 import type { User } from "@/lib/types";
 import { getUserById } from "@/lib/data";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-import { Loader2 } from "lucide-react";
+import { doc, onSnapshot } from "firebase/firestore";
+import Loader from "@/components/ui/loader";
 
 interface AuthContextType {
   user: User | null;
@@ -30,37 +30,72 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setLoading(true);
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    let unsubscribeSnapshot: (() => void) | null = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (unsubscribeSnapshot) {
+        (unsubscribeSnapshot as () => void)();
+        unsubscribeSnapshot = null;
+      }
+
       if (firebaseUser) {
-        // Fetch user profile from Firestore using UID
-        const fetchedUser = await getUserById(firebaseUser.uid);
-        setUser(fetchedUser || null);
+        // Subscribe to real-time user updates
+        const userRef = doc(db, "users", firebaseUser.uid);
+        unsubscribeSnapshot = onSnapshot(
+          userRef,
+          (docSnap) => {
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              const updatedUser = {
+                id: docSnap.id,
+                ...data,
+                // safe handle timestamp
+                createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : data.createdAt
+              } as User;
+              setUser(updatedUser);
+            } else {
+              console.error("User document does not exist for UID:", firebaseUser.uid);
+              setUser(null);
+            }
+            setLoading(false);
+          },
+          (error) => {
+            console.error("Error fetching user snapshot:", error);
+            setLoading(false);
+          }
+        );
       } else {
         setUser(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
-    return () => unsubscribe();
+
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeSnapshot) {
+        (unsubscribeSnapshot as () => void)();
+      }
+    };
   }, []);
 
   const login = async (email: string, password: string): Promise<User | null> => {
     try {
       const credential = await signInWithEmailAndPassword(auth, email, password);
+      // The onAuthStateChanged listener will handle fetching/setting the user
+      // But we find getting the user immediately can be useful for the return value
       const firebaseUser = credential.user;
-      // Fetch user profile from Firestore using UID
+      // We can fetch once here just to return it, even though the listener will also fire
       const fetchedUser = await getUserById(firebaseUser.uid);
-      setUser(fetchedUser || null);
       return fetchedUser || null;
     } catch (error) {
       console.error("Login failed:", error);
-      setUser(null);
       return null;
     }
   };
 
   const logout = () => {
     signOut(auth);
-    setUser(null);
+    // State clear handled by listener
   };
 
   const value = { user, loading, login, logout };
@@ -68,10 +103,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={value}>
       {loading ? (
-        <div className="h-screen w-screen flex items-center justify-center">
-            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <div className="h-screen w-screen flex items-center justify-center bg-background">
+          <Loader />
         </div>
-      ) : children }
+      ) : children}
     </AuthContext.Provider>
   );
 }

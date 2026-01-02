@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { formatINR } from '@/lib/utils';
 import { Separator } from './ui/separator';
+import { PaymentGateway } from './payment-gateway';
 
 
 interface BookingCardProps {
@@ -81,6 +82,10 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
         })
     }
 
+    // State for Payment Modal
+    const [showPayment, setShowPayment] = useState(false);
+
+    // Modified handleBooking to just open payment modal
     const handleBooking = () => {
         if (!user) {
             toast({
@@ -101,14 +106,21 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
             return;
         }
 
+        // Open Payment Gateway
+        setShowPayment(true);
+    };
+
+    // Actual Booking Logic (called after successful payment)
+    const onPaymentSuccess = () => {
+        setShowPayment(false); // Close payment modal
         startTransition(async () => {
             try {
                 await createBooking({
-                    userId: user.id,
-                    roomId: selectedRoomId,
+                    userId: user!.id,
+                    roomId: selectedRoomId!,
                     hotelId: hotel.id,
-                    fromDate: dateRange.from!,
-                    toDate: dateRange.to!,
+                    fromDate: dateRange!.from!,
+                    toDate: dateRange!.to!,
                     totalPrice: finalTotal,
                 });
                 toast({
@@ -135,6 +147,64 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
         )
     }
 
+    return (
+        <>
+            <BookingCardContent
+                hotel={hotel}
+                rooms={rooms}
+                selectedRoom={selectedRoom}
+                selectedRoomId={selectedRoomId}
+                setSelectedRoomId={setSelectedRoomId}
+                dateRange={dateRange}
+                setDateRange={setDateRange}
+                guests={guests}
+                guestText={guestText}
+                handleGuestChange={handleGuestChange}
+                handleBooking={handleBooking}
+                isPending={isPending}
+                formatINR={formatINR}
+                format={format}
+                totalPrice={totalPrice}
+                serviceFee={serviceFee}
+                finalTotal={finalTotal}
+                numberOfNights={numberOfNights}
+            />
+
+            <PaymentGateway
+                open={showPayment}
+                onOpenChange={setShowPayment}
+                amount={finalTotal}
+                onSuccess={onPaymentSuccess}
+            />
+        </>
+    );
+}
+
+// Extracting Content to cleaner component to avoid Hook mess
+function BookingCardContent({
+    hotel, rooms, selectedRoom, selectedRoomId, setSelectedRoomId, dateRange, setDateRange,
+    guests, guestText, handleGuestChange, handleBooking, isPending, formatINR, format,
+    totalPrice, serviceFee, finalTotal, numberOfNights
+}: {
+    hotel: Hotel;
+    rooms: Room[];
+    selectedRoom: Room | undefined;
+    selectedRoomId: string | undefined;
+    setSelectedRoomId: (id: string) => void;
+    dateRange: DateRange | undefined;
+    setDateRange: (range: DateRange | undefined) => void;
+    guests: any;
+    guestText: string;
+    handleGuestChange: any;
+    handleBooking: () => void;
+    isPending: boolean;
+    formatINR: (amount: number) => string;
+    format: any;
+    totalPrice: number;
+    serviceFee: number;
+    finalTotal: number;
+    numberOfNights: number;
+}) {
     return (
         <Card className="shadow-xl rounded-2xl border p-6 sticky top-24">
             <CardHeader className="p-0 mb-4">
@@ -190,7 +260,7 @@ export function BookingCard({ rooms, hotel }: BookingCardProps) {
                                 <SelectValue placeholder="Select a room" />
                             </SelectTrigger>
                             <SelectContent className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl">
-                                {rooms.map(room => (
+                                {rooms.map((room: Room) => (
                                     <SelectItem key={room.id} value={room.id}>{room.title} (Max: {room.capacity} guests)</SelectItem>
                                 ))}
                             </SelectContent>

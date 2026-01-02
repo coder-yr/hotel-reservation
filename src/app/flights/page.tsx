@@ -1,147 +1,191 @@
-import { Header } from '@/components/header'
-import { Footer } from '@/components/footer'
-import Link from 'next/link'
+import { Header } from '@/components/header';
+import { Footer } from '@/components/footer';
+import { SearchForm } from '@/components/search-form';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Plane, CalendarRange, ShieldCheck, Tag, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
+import { getAllFlights } from '@/lib/data';
 
-export default function FlightsPage() {
-  return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <Header />
+const CITY_IMAGES: Record<string, string> = {
+    "Dubai": "https://images.unsplash.com/photo-1512453979798-5ea90b79875c?q=80&w=600&auto=format&fit=crop",
+    "London": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=600&auto=format&fit=crop",
+    "Singapore": "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?q=80&w=600&auto=format&fit=crop",
+    "Bangkok": "https://images.unsplash.com/photo-1508009603885-50cf7c579365?q=80&w=600&auto=format&fit=crop",
+    "Paris": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=600&auto=format&fit=crop",
+    "New York": "https://images.unsplash.com/photo-1496442226310-804d10071206?q=80&w=600&auto=format&fit=crop",
+    "Tokyo": "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=600&auto=format&fit=crop",
+    "Mumbai": "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=600&auto=format&fit=crop",
+    "Delhi": "https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=600&auto=format&fit=crop",
+    "Bangalore": "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?q=80&w=600&auto=format&fit=crop",
+    "Goa": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80&w=600&auto=format&fit=crop",
+};
 
-      <main className="flex-1">
-        {/* Hero / Search */}
-        {/* Hero / Search */}
-        <div className="relative h-[400px] w-full flex items-center justify-center mb-12">
-          <div className="absolute inset-0 z-0">
-            <img
-              src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2074&auto=format&fit=crop"
-              alt="Flights Hero"
-              className="w-full h-full object-cover brightness-[0.85]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
-          </div>
+const DEFAULT_CITY_IMAGE = "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=600&auto=format&fit=crop";
 
-          <div className="relative z-10 w-full max-w-6xl px-4">
-            <h1 className="text-3xl md:text-5xl font-bold text-white text-center mb-8 drop-shadow-md">
-              Book Domestic and International Flights
-            </h1>
-            <div className="glass p-8 rounded-[2rem] shadow-2xl border-0">
-              <form className="space-y-4">
-                <div className="flex gap-3 items-center justify-between border-b pb-4 mb-4">
-                  <div className="flex items-center space-x-6">
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input type="radio" name="trip" defaultChecked className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium">Oneway</span>
-                    </label>
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input type="radio" name="trip" className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium">Round Trip</span>
-                    </label>
-                    <label className="flex items-center space-x-2 cursor-pointer">
-                      <input type="radio" name="trip" className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium">Multi City</span>
-                    </label>
-                  </div>
-                  <div className="text-sm text-muted-foreground font-medium">Trusted by millions of travelers</div>
-                </div>
+export default async function FlightsPage() {
+    const flights = await getAllFlights();
 
-                <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                  <div className="md:col-span-2 space-y-1">
-                    <label className="text-xs font-bold uppercase text-muted-foreground">From</label>
-                    <input className="w-full p-3 glass border-0 rounded-xl font-semibold text-lg focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-500" placeholder="Delhi (DEL)" />
-                  </div>
-                  <div className="md:col-span-2 space-y-1">
-                    <label className="text-xs font-bold uppercase text-muted-foreground">To</label>
-                    <input className="w-full p-3 glass border-0 rounded-xl font-semibold text-lg focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-500" placeholder="Bengaluru (BLR)" />
-                  </div>
-                  <div className="md:col-span-1 space-y-1">
-                    <label className="text-xs font-bold uppercase text-muted-foreground">Departure</label>
-                    <input type="date" className="w-full p-3 glass border-0 rounded-xl font-medium" />
-                  </div>
-                  <div className="md:col-span-1 space-y-1">
-                    <label className="text-xs font-bold uppercase text-muted-foreground">Return</label>
-                    <input type="date" className="w-full p-3 glass border-0 rounded-xl font-medium" />
-                  </div>
-                </div>
+    // Process Popular Destinations (Unique Arrival Cities)
+    const uniqueDestinations = Array.from(new Set(flights.map(f => f.arrive))).slice(0, 4);
 
-                <div className="flex items-center gap-3 md:justify-between pt-4">
-                  <div className="flex items-center gap-6">
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold uppercase text-muted-foreground">Travellers & Class</label>
-                      <select className="w-full bg-transparent font-semibold outline-none">
-                        <option>1 Traveller, Economy</option>
-                        <option>2 Travellers, Economy</option>
-                        <option>1 Traveller, Business</option>
-                      </select>
+    // Fallback if no flights
+    const displayDestinations = uniqueDestinations.length > 0 ? uniqueDestinations.map(city => ({
+        city,
+        country: "Popular Destination", // We don't have country data in simple Flight type, keeping generic
+        image: CITY_IMAGES[city] || DEFAULT_CITY_IMAGE,
+        price: "Check Prices"
+    })) : [
+        // Fallback static data if DB is empty to keep UI looking good
+        { city: "Dubai", country: "UAE", price: "From ₹18,000", image: CITY_IMAGES["Dubai"] },
+        { city: "London", country: "UK", price: "From ₹45,000", image: CITY_IMAGES["London"] },
+        { city: "Singapore", country: "Singapore", price: "From ₹22,000", image: CITY_IMAGES["Singapore"] },
+        { city: "Bangkok", country: "Thailand", price: "From ₹12,000", image: CITY_IMAGES["Bangkok"] }
+    ];
+
+    // Process Deals (Just taking first 3 flights for now, randomizing would be better but simple is fine)
+    const displayDeals = flights.length > 0 ? flights.slice(0, 3).map(f => ({
+        from: f.depart,
+        to: f.arrive,
+        airline: f.airline,
+        price: f.price,
+        date: "Upcoming" // We don't have specific dates in Flight type yet, it's a schedule
+    })) : [
+        { from: "Delhi", to: "Mumbai", airline: "Indigo", price: "₹4,500", date: "15 Oct" },
+        { from: "Bangalore", to: "Goa", airline: "Vistara", price: "₹3,200", date: "20 Oct" },
+        { from: "Chennai", to: "Delhi", airline: "Air India", price: "₹6,100", date: "25 Oct" }
+    ];
+
+
+    return (
+        <div className="flex flex-col min-h-screen bg-background font-sans">
+            <Header />
+            <main className="flex-1">
+
+                {/* Hero Section */}
+                <section className="relative h-[95vh] flex items-center justify-center pt-20">
+                    <div className="absolute inset-0 z-0">
+                        <video
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="w-full h-full object-cover brightness-[0.6]"
+                        >
+                            <source src="/videos/airline.mp4" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
                     </div>
-                  </div>
+                    <div className="container relative z-10 px-4">
+                        <div className="text-center mb-8 text-white">
+                            <h1 className="text-4xl md:text-6xl font-bold mb-4">Discover the World</h1>
+                            <p className="text-xl md:text-2xl opacity-90">Find and book great flights at the lowest prices.</p>
+                        </div>
+                        <SearchForm defaultTab="flight" />
+                    </div>
+                </section>
 
-                  <div className="ml-auto">
-                    <a href="/flights/results" className="inline-block">
-                      <button type="button" className="bg-accent hover:bg-accent/90 text-white px-8 py-3 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
-                        SEARCH FLIGHTS
-                      </button>
-                    </a>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
+                {/* Features Section */}
+                <section className="py-16 container px-4">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                        {[
+                            { icon: Plane, title: "Huge Selection", desc: "Compare flights from 500+ airlines" },
+                            { icon: Tag, title: "Best Price Match", desc: "Found a cheaper flight? We will match it." },
+                            { icon: ShieldCheck, title: "Secure Booking", desc: "100% secure payment processing" },
+                            { icon: CalendarRange, title: "Flexible Plans", desc: "Change your mind? Modify simply." },
+                        ].map((item, idx) => (
+                            <div key={idx} className="flex flex-col items-center text-center space-y-3 p-6 rounded-2xl bg-muted/30 hover:bg-muted/50 transition-colors">
+                                <div className="p-4 rounded-full bg-primary/10 text-primary">
+                                    <item.icon className="w-8 h-8" />
+                                </div>
+                                <h3 className="font-semibold text-xl">{item.title}</h3>
+                                <p className="text-muted-foreground">{item.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                {/* Popular Destinations */}
+                <section className="py-12 bg-muted/20">
+                    <div className="container px-4">
+                        <div className="flex justify-between items-end mb-8">
+                            <div>
+                                <h2 className="text-3xl font-bold mb-2">Popular Destinations</h2>
+                                <p className="text-muted-foreground">Top recurring destinations from our travellers</p>
+                            </div>
+                            <Button variant="outline">View All</Button>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {displayDestinations.map((dest, idx) => (
+                                <Card key={idx} className="group relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all cursor-pointer">
+                                    <div className="relative h-64 overflow-hidden">
+                                        <Image
+                                            src={dest.image}
+                                            alt={dest.city}
+                                            fill
+                                            className="object-cover group-hover:scale-110 transition-transform duration-500"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90" />
+                                        <div className="absolute bottom-4 left-4 text-white">
+                                            <h3 className="text-2xl font-bold">{dest.city}</h3>
+                                            <p className="opacity-90">{dest.country}</p>
+                                        </div>
+                                    </div>
+                                    <CardContent className="p-4 flex justify-between items-center bg-white dark:bg-slate-900 absolute bottom-0 w-full translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                        <span className="font-semibold text-primary">{dest.price}</span>
+                                        <Button size="sm" className="rounded-full">Book Now</Button>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Flight Deals Grid */}
+                <section className="py-16 container px-4">
+                    <h2 className="text-3xl font-bold mb-8">Latest Flight Deals</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {displayDeals.map((deal, idx) => (
+                            <div key={idx} className="border border-dashed border-primary/30 rounded-xl p-6 bg-primary/5 hover:bg-primary/10 transition-colors flex justify-between items-center cursor-pointer group">
+                                <div>
+                                    <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
+                                        <CalendarRange className="w-4 h-4" /> {deal.date}
+                                    </div>
+                                    <div className="flex items-center gap-4 text-xl font-bold mb-1">
+                                        <span>{deal.from}</span>
+                                        <ArrowRight className="w-5 h-5 text-muted-foreground mx-1 group-hover:translate-x-1 transition-transform" />
+                                        <span>{deal.to}</span>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground">{deal.airline}</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-xs text-muted-foreground mb-1">Starting from</p>
+                                    <p className="text-xl font-bold text-primary">{deal.price}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+                {/* Newsletter CTA */}
+                <section className="py-20 bg-slate-900 text-white mt-12">
+                    <div className="container px-4 text-center">
+                        <h2 className="text-3xl font-bold mb-4">Never Miss a Deal</h2>
+                        <p className="text-slate-300 mb-8 max-w-xl mx-auto">Subscribe to our newsletter and get exclusive flight offers, travel tips, and more delivered straight to your inbox.</p>
+                        <div className="flex max-w-md mx-auto gap-4">
+                            <input
+                                type="email"
+                                placeholder="Enter your email"
+                                className="flex-1 px-4 py-3 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            <Button size="lg" className="rounded-full px-8">Subscribe</Button>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+            <Footer />
         </div>
-
-        {/* Offers row */}
-        <section className="container mx-auto px-4 py-8 section-bg p-6 rounded-lg">
-          <h2 className="text-lg font-semibold mb-4">Offers For You</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Link href="#" className="block border rounded-lg p-4 shadow-sm">
-              <div className="font-medium">Up to 52% OFF on Travel Bookings!</div>
-              <div className="text-sm text-muted-foreground">Bus, Hotels, Cabs, Flights, Trains</div>
-            </Link>
-            <Link href="#" className="block border rounded-lg p-4 shadow-sm">
-              <div className="font-medium">Bank Offers</div>
-              <div className="text-sm text-muted-foreground">Save with partner cards</div>
-            </Link>
-            <Link href="#" className="block border rounded-lg p-4 shadow-sm">
-              <div className="font-medium">Explore Offers</div>
-              <div className="text-sm text-muted-foreground">View all</div>
-            </Link>
-            <Link href="#" className="block border rounded-lg p-4 shadow-sm">
-              <div className="font-medium">Hotels</div>
-              <div className="text-sm text-muted-foreground">Up to 52% OFF</div>
-            </Link>
-          </div>
-        </section>
-
-        {/* Popular routes & FAQs (short) */}
-        <section className="container mx-auto px-4 py-6 section-bg p-6 rounded-lg">
-          <h3 className="font-semibold mb-3">Popular Flight Routes</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-muted-foreground">
-            <div>
-              <ul className="space-y-1">
-                <li>Delhi Flights</li>
-                <li>Mumbai Flights</li>
-                <li>Bengaluru Flights</li>
-              </ul>
-            </div>
-            <div>
-              <ul className="space-y-1">
-                <li>Goa Flights</li>
-                <li>Hyderabad Flights</li>
-                <li>Jaipur Flights</li>
-              </ul>
-            </div>
-            <div>
-              <ul className="space-y-1">
-                <li>Chennai Flights</li>
-                <li>Kolkata Flights</li>
-                <li>Ahmedabad Flights</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <Footer />
-    </div>
-  )
+    );
 }
-
