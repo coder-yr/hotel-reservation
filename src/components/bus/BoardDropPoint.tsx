@@ -1,14 +1,14 @@
 "use client";
-import { MapPin, Clock } from 'lucide-react';
-import { useState } from 'react';
+
+import React, { useState } from 'react';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface BoardDropPointProps {
-  onContinue: () => void;
   selectedSeats: string[];
-  bus?: {
-    boardingPoints?: Array<{ id: string; name: string; time: string; address: string }>;
-    droppingPoints?: Array<{ id: string; name: string; time: string; address: string }>;
-  };
+  bus?: any;
+  onContinue: () => void;
   initialBoarding?: string;
   initialDropping?: string;
   onBoardingChange?: (val: string) => void;
@@ -16,167 +16,87 @@ interface BoardDropPointProps {
 }
 
 export function BoardDropPoint({
-  onContinue,
   selectedSeats,
   bus,
-  initialBoarding = '',
-  initialDropping = '',
+  onContinue,
+  initialBoarding,
+  initialDropping,
   onBoardingChange,
   onDroppingChange
 }: BoardDropPointProps) {
-  const [internalBoarding, setInternalBoarding] = useState<string>(initialBoarding);
-  const [internalDropping, setInternalDropping] = useState<string>(initialDropping);
-
-  const selectedBoarding = onBoardingChange ? initialBoarding : internalBoarding;
-  const selectedDropping = onDroppingChange ? initialDropping : internalDropping;
+  const [boarding, setBoarding] = useState(initialBoarding || "");
+  const [dropping, setDropping] = useState(initialDropping || "");
 
   const handleBoardingChange = (val: string) => {
-    if (onBoardingChange) onBoardingChange(val);
-    else setInternalBoarding(val);
+    setBoarding(val);
+    onBoardingChange?.(val);
   };
 
   const handleDroppingChange = (val: string) => {
-    if (onDroppingChange) onDroppingChange(val);
-    else setInternalDropping(val);
+    setDropping(val);
+    onDroppingChange?.(val);
   };
 
-  const boardingPoints = (bus?.boardingPoints && bus.boardingPoints.length > 0) ? bus.boardingPoints : [
-    {
-      id: 'sion',
-      name: 'Sion, Mumbai',
-      time: '15:45',
-      address: 'Sion Station, Mumbai 400022'
-    },
-    {
-      id: 'dadar',
-      name: 'Dadar, Mumbai',
-      time: '16:00',
-      address: 'Dadar Station East, Mumbai 400014'
-    },
-    {
-      id: 'bandra',
-      name: 'Bandra, Mumbai',
-      time: '16:15',
-      address: 'Bandra Station, Mumbai 400050'
-    },
+  const boardingPoints = [
+    { id: "bp1", time: "22:00", place: "Kashmere Gate", landmark: "Metro Station Gate 5" },
+    { id: "bp2", time: "22:30", place: "Majnu Ka Tila", landmark: "Petrol Pump" },
+    { id: "bp3", time: "23:15", place: "RK Ashram", landmark: "Metro Station" },
   ];
 
-  const droppingPoints = (bus?.droppingPoints && bus.droppingPoints.length > 0) ? bus.droppingPoints : [
-    {
-      id: 'pune-central',
-      name: 'Pune Central',
-      time: '20:55',
-      address: 'Shivaji Nagar, Pune 411005'
-    },
-    {
-      id: 'pune-camp',
-      name: 'Pune Camp',
-      time: '21:05',
-      address: 'Camp, Pune 411001'
-    },
-    {
-      id: 'pune-airport',
-      name: 'Pune Airport',
-      time: '21:20',
-      address: 'Lohegaon, Pune 411014'
-    },
+  const droppingPoints = [
+    { id: "dp1", time: "06:00", place: "Private Bus Stand", landmark: "Near Mall Road" },
+    { id: "dp2", time: "06:45", place: "Patlikuhal", landmark: "Main Highway" },
   ];
-
-  const isFormValid = selectedBoarding && selectedDropping;
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-6">Select Boarding & Dropping Points</h2>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div>
-          <h3 className="font-medium text-gray-900 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-[#E53935]" />
-            Boarding Point
-          </h3>
-
-          <div className="space-y-3">
-            {boardingPoints.map((point) => (
-              <label
-                key={point.id}
-                className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all ${selectedBoarding === point.id || selectedBoarding === point.name
-                  ? 'border-[#E53935] bg-red-50'
-                  : 'border-gray-200 hover:border-gray-300'
-                  }`}
-              >
-                <input
-                  type="radio"
-                  name="boarding"
-                  value={point.id}
-                  checked={selectedBoarding === point.id || selectedBoarding === point.name}
-                  onChange={(e) => handleBoardingChange(point.name)}
-                  className="mt-1"
-                />
-                <div className="ml-3 flex-1">
-                  <p className="font-medium text-gray-900">{point.name}</p>
-                  <p className="text-sm text-gray-600 mt-1">{point.address}</p>
-                  <div className="flex items-center gap-1 mt-2 text-sm text-gray-500">
-                    <Clock className="w-4 h-4" />
-                    {point.time}
-                  </div>
-                </div>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <h3 className="font-medium text-gray-900 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-[#E53935]" />
-            Dropping Point
-          </h3>
-
-          <div className="space-y-3">
-            {droppingPoints.map((point) => (
-              <label
-                key={point.id}
-                className={`flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all ${selectedDropping === point.id || selectedDropping === point.name
-                  ? 'border-[#E53935] bg-red-50'
-                  : 'border-gray-200 hover:border-gray-300'
-                  }`}
-              >
-                <input
-                  type="radio"
-                  name="dropping"
-                  value={point.id}
-                  checked={selectedDropping === point.id || selectedDropping === point.name}
-                  onChange={(e) => handleDroppingChange(point.name)}
-                  className="mt-1"
-                />
-                <div className="ml-3 flex-1">
-                  <p className="font-medium text-gray-900">{point.name}</p>
-                  <p className="text-sm text-gray-600 mt-1">{point.address}</p>
-                  <div className="flex items-center gap-1 mt-2 text-sm text-gray-500">
-                    <Clock className="w-4 h-4" />
-                    {point.time}
-                  </div>
-                </div>
-              </label>
-            ))}
-          </div>
-        </div>
+    <div className="space-y-6 bg-white p-6 rounded-lg shadow-md">
+      <div>
+        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-900 text-white text-xs">1</span>
+          Select Boarding Point
+        </h3>
+        <RadioGroup value={boarding} onValueChange={handleBoardingChange} className="space-y-3">
+          {boardingPoints.map((point) => (
+            <div key={point.id} className={`flex items-center justify-between p-3 rounded-lg border ${boarding === point.place ? 'border-primary bg-primary/5' : 'border-slate-200 hover:bg-slate-50'}`}>
+              <div className="flex items-center space-x-3">
+                <RadioGroupItem value={point.place} id={point.id} />
+                <Label htmlFor={point.id} className="cursor-pointer">
+                  <div className="font-semibold text-slate-900">{point.time} - {point.place}</div>
+                  <div className="text-xs text-slate-500">{point.landmark}</div>
+                </Label>
+              </div>
+            </div>
+          ))}
+        </RadioGroup>
       </div>
 
-      <div className="flex gap-4 mt-8 pt-6 border-t border-gray-200">
-        <button className="flex-1 px-6 py-3 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-          Back
-        </button>
-        <button
-          onClick={onContinue}
-          disabled={!isFormValid}
-          className={`flex-1 px-6 py-3 rounded-lg font-medium text-white transition-colors ${isFormValid
-            ? 'bg-[#E53935] hover:bg-[#D32F2F]'
-            : 'bg-gray-300 cursor-not-allowed'
-            }`}
-        >
-          Continue to Passenger Info
-        </button>
+      <div className="pt-6 border-t border-slate-100">
+        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-900 text-white text-xs">2</span>
+          Select Dropping Point
+        </h3>
+        <RadioGroup value={dropping} onValueChange={handleDroppingChange} className="space-y-3">
+          {droppingPoints.map((point) => (
+            <div key={point.id} className={`flex items-center justify-between p-3 rounded-lg border ${dropping === point.place ? 'border-primary bg-primary/5' : 'border-slate-200 hover:bg-slate-50'}`}>
+              <div className="flex items-center space-x-3">
+                <RadioGroupItem value={point.place} id={point.id} />
+                <Label htmlFor={point.id} className="cursor-pointer">
+                  <div className="font-semibold text-slate-900">{point.time} - {point.place}</div>
+                  <div className="text-xs text-slate-500">{point.landmark}</div>
+                </Label>
+              </div>
+            </div>
+          ))}
+        </RadioGroup>
       </div>
+
+      <Button
+        className="w-full mt-6"
+        disabled={!boarding || !dropping}
+        onClick={onContinue}
+      >
+        Continue to Passenger Details
+      </Button>
     </div>
   );
 }
