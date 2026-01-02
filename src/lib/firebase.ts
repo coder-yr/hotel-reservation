@@ -726,7 +726,7 @@ const seedDatabase = async () => {
 
 // Immediately invoke the seeding function to ensure data is available on startup
 export { seedDatabase };
-seedDatabase(); // Uncomment this line if you need to run seeding via module import, otherwise call it where appropriate like in an admin page or useEffect.
+// seedDatabase(); // Uncomment this line if you need to run seeding via module import, otherwise call it where appropriate like in an admin page or useEffect.
 // Checking environment to maybe auto-seed in dev? 
 // For now, let's export it and user can trigger it or we trigger it via specific user action.
 
