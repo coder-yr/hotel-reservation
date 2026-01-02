@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 import { seedDatabase, getApprovedHotels } from '@/lib/firebase';
 
 export async function GET() {
