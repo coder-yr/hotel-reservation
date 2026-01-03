@@ -71,6 +71,7 @@ export default async function FlightsPage() {
                             muted
                             playsInline
                             className="w-full h-full object-cover brightness-[0.6]"
+                            poster="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1920&auto=format&fit=crop"
                         >
                             <source src="/videos/airline.mp4" type="video/mp4" />
                             Your browser does not support the video tag.

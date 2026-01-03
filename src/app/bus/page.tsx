@@ -88,6 +88,7 @@ export default async function BusPage() {
               muted
               playsInline
               className="w-full h-full object-cover brightness-[0.7]"
+              poster="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1920&auto=format&fit=crop"
             >
               <source src="/videos/Bus.mp4" type="video/mp4" />
               Your browser does not support the video tag.

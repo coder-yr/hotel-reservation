@@ -16,6 +16,7 @@ export function DoraHero() {
                     muted
                     playsInline
                     className="w-full h-full object-cover opacity-60"
+                    poster="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop"
                 >
                     <source src="/videos/1851190-uhd_3840_2160_25fps.mp4" type="video/mp4" />
                     Your browser does not support the video tag.

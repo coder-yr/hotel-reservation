@@ -18,6 +18,7 @@ export function HotelLandingHero({ initialDestination }: HotelLandingHeroProps) 
                 muted
                 playsInline
                 className="absolute inset-0 w-full h-full object-cover"
+                poster="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1920&auto=format&fit=crop"
             >
                 <source src="/videos/luxury-hotel.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
